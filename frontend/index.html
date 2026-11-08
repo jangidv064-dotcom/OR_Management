@@ -1,21 +1,17 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Open Rails Act Manager</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-
 <div class="app">
-
-    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="brand">
             <div class="brand-icon"><i data-lucide="train-front"></i></div>
@@ -26,133 +22,65 @@
         </div>
 
         <div class="nav-label">WORKSPACE</div>
-
         <nav class="navigation">
-            <a href="#" class="nav-link active">
-                <i data-lucide="layout-dashboard"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="#" class="nav-link">
-                <i data-lucide="folder-open"></i>
-                <span>My Activities</span>
-            </a>
-            <a href="#" class="nav-link">
-                <i data-lucide="train-front"></i>
-                <span>Train Manager</span>
-            </a>
-            <a href="#" class="nav-link">
-                <i data-lucide="git-branch"></i>
-                <span>Sections & Paths</span>
-            </a>
-            <a href="#" class="nav-link">
-                <i data-lucide="clock"></i>
-                <span>Timetable</span>
-            </a>
+            <a href="/" class="nav-link active"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+            <a href="#activities" class="nav-link"><i data-lucide="folder-open"></i><span>My Activities</span></a>
         </nav>
 
         <div class="sidebar-bottom">
-            <div class="nav-label">PREFERENCES</div>
-            <a href="#" class="nav-link">
-                <i data-lucide="settings"></i>
-                <span>Settings</span>
-            </a>
-
             <div class="user-profile">
-                <div class="avatar">JM</div>
+                <div class="brand-icon"><i data-lucide="database"></i></div>
                 <div class="user-details">
-                    <strong>Activity Maker</strong>
-                    <span>Local Workspace</span>
+                    <strong>Personal Workspace</strong>
+                    <span>Local installation</span>
                 </div>
-                <i data-lucide="more-horizontal"></i>
             </div>
         </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
     <main class="main-content">
-
         <header class="topbar">
             <div>
                 <div class="breadcrumb">WORKSPACE / DASHBOARD</div>
                 <h1>Dashboard</h1>
             </div>
-
             <div class="topbar-right">
-                <div class="system-status">
+                <div class="system-status" id="apiStatus">
                     <span class="status-dot"></span>
-                    SYSTEM READY
+                    CONNECTING
                 </div>
-                <button class="icon-button" title="Notifications">
-                    <i data-lucide="bell"></i>
-                </button>
             </div>
         </header>
 
         <section class="welcome-section">
             <div>
                 <div class="eyebrow">ACTIVITY CONTROL CENTRE</div>
-                <h2>Welcome aboard, <span>Activity Maker.</span></h2>
+                <h2>Open Rails <span>Workspace.</span></h2>
                 <p>Manage your Open Rails activities from one organised workspace.</p>
             </div>
-
             <button class="primary-button" id="createActivityBtn">
                 <i data-lucide="plus"></i>
                 Create New Activity
             </button>
         </section>
 
-        <!-- STATISTICS -->
         <section class="stats-grid">
-
             <div class="stat-card">
                 <div class="stat-top">
                     <span>TOTAL ACTIVITIES</span>
                     <i data-lucide="folder-open"></i>
                 </div>
-                <div class="stat-value" id="totalActivities">03</div>
-                <div class="stat-description">Activities in workspace</div>
+                <div class="stat-value" id="totalActivities">—</div>
+                <div class="stat-description">Saved in your workspace</div>
             </div>
-
-            <div class="stat-card">
-                <div class="stat-top">
-                    <span>TOTAL TRAINS</span>
-                    <i data-lucide="train-front"></i>
-                </div>
-                <div class="stat-value">24</div>
-                <div class="stat-description">Player + AI trains</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-top">
-                    <span>PLAYER TRAINS</span>
-                    <i data-lucide="locomotive"></i>
-                </div>
-                <div class="stat-value">03</div>
-                <div class="stat-description">Across all activities</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-top">
-                    <span>AI TRAINS</span>
-                    <i data-lucide="workflow"></i>
-                </div>
-                <div class="stat-value">21</div>
-                <div class="stat-description">Across all activities</div>
-            </div>
-
         </section>
 
-        <!-- RECENT ACTIVITIES -->
-        <section class="activities-section">
-
+        <section class="activities-section" id="activities">
             <div class="section-heading">
                 <div>
                     <div class="eyebrow">YOUR WORKSPACE</div>
-                    <h2>Recent Activities</h2>
+                    <h2>Activities</h2>
                 </div>
-                <button class="secondary-button" id="viewAllBtn">
-                    View All <i data-lucide="arrow-up-right"></i>
-                </button>
             </div>
 
             <div class="activity-table-wrapper">
@@ -161,125 +89,47 @@
                         <tr>
                             <th>ACTIVITY NAME</th>
                             <th>ROUTE</th>
-                            <th>PLAYER TRAIN</th>
-                            <th>AI TRAINS</th>
                             <th>STATUS</th>
-                            <th></th>
+                            <th>CREATED</th>
                         </tr>
                     </thead>
-
                     <tbody id="activityTable">
-                        <tr>
-                            <td>
-                                <div class="activity-name">93029 Virar - Dahanu Rd</div>
-                                <div class="activity-sub">12 Car Slow Local</div>
-                            </td>
-                            <td>Khandesh Route</td>
-                            <td>1</td>
-                            <td>08</td>
-                            <td><span class="status-badge progress">In Progress</span></td>
-                            <td><button class="more-btn"><i data-lucide="more-horizontal"></i></button></td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="activity-name">12910 Garibrath Express</div>
-                                <div class="activity-sub">Express Passenger</div>
-                            </td>
-                            <td>Khandesh Route</td>
-                            <td>1</td>
-                            <td>10</td>
-                            <td><span class="status-badge completed">Completed</span></td>
-                            <td><button class="more-btn"><i data-lucide="more-horizontal"></i></button></td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="activity-name">12979 Superfast Express</div>
-                                <div class="activity-sub">Express Passenger</div>
-                            </td>
-                            <td>Khandesh Route</td>
-                            <td>1</td>
-                            <td>03</td>
-                            <td><span class="status-badge draft">Draft</span></td>
-                            <td><button class="more-btn"><i data-lucide="more-horizontal"></i></button></td>
-                        </tr>
+                        <tr><td colspan="4" class="empty-state">Loading activities...</td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- QUICK ACCESS -->
-        <section class="quick-access">
-            <div class="section-heading">
-                <div>
-                    <div class="eyebrow">QUICK NAVIGATION</div>
-                    <h2>Workspace Tools</h2>
-                </div>
-            </div>
-
-            <div class="tools-grid">
-                <div class="tool-card">
-                    <div class="tool-icon"><i data-lucide="train-front"></i></div>
-                    <h3>Train Manager</h3>
-                    <p>Manage player and AI train information.</p>
-                    <i data-lucide="arrow-up-right" class="tool-arrow"></i>
-                </div>
-
-                <div class="tool-card">
-                    <div class="tool-icon"><i data-lucide="git-branch"></i></div>
-                    <h3>Sections & Paths</h3>
-                    <p>Organise routes and station-to-station sections.</p>
-                    <i data-lucide="arrow-up-right" class="tool-arrow"></i>
-                </div>
-
-                <div class="tool-card">
-                    <div class="tool-icon"><i data-lucide="clock"></i></div>
-                    <h3>Timetable</h3>
-                    <p>View train schedules and station halts.</p>
-                    <i data-lucide="arrow-up-right" class="tool-arrow"></i>
-                </div>
-            </div>
-        </section>
-
-        <footer>
-            OPEN RAILS ACT MANAGER <span>•</span> ACTIVITY MANAGEMENT WORKSPACE
-        </footer>
-
+        <footer>OPEN RAILS ACT MANAGER <span>•</span> PERSONAL WORKSPACE</footer>
     </main>
 </div>
 
-<!-- CREATE ACTIVITY MODAL -->
 <div class="modal-overlay" id="activityModal">
     <div class="modal">
         <div class="modal-heading">
             <div>
-                <div class="eyebrow">NEW WORKSPACE</div>
+                <div class="eyebrow">NEW WORKSPACE ITEM</div>
                 <h2>Create Activity</h2>
             </div>
-            <button class="close-btn" id="closeModal">
-                <i data-lucide="x"></i>
-            </button>
+            <button class="close-btn" id="closeModal" type="button"><i data-lucide="x"></i></button>
         </div>
 
         <form id="activityForm">
-            <label>Activity Name</label>
-            <input type="text" id="activityName" placeholder="e.g. 12979 Superfast Express" required>
+            <label for="activityName">Activity Name</label>
+            <input type="text" id="activityName" maxlength="150" required>
 
-            <label>Route Name</label>
-            <input type="text" id="routeName" placeholder="e.g. Khandesh Route" required>
+            <label for="routeName">Route Name</label>
+            <input type="text" id="routeName" maxlength="150" required>
 
-            <label>Player Train</label>
-            <input type="text" id="playerTrain" placeholder="e.g. 12 Car Express" required>
-
+            <div id="formError" class="form-error" role="alert"></div>
             <div class="modal-actions">
                 <button type="button" class="secondary-button" id="cancelModal">Cancel</button>
-                <button type="submit" class="primary-button">Create Activity</button>
+                <button type="submit" class="primary-button" id="saveActivityBtn">Create Activity</button>
             </div>
         </form>
     </div>
 </div>
 
-<script src="js/script.js"></script>
+<script src="/js/script.js"></script>
 </body>
 </html>
