@@ -645,3 +645,28 @@ footer span {
         font-size: 8px;
     }
 }
+
+
+/* BACKEND-CONNECTED DASHBOARD */
+.empty-state {
+    text-align: center;
+    color: var(--muted);
+    padding: 34px 20px;
+    font-size: 12px;
+}
+.form-error {
+    color: #ff8585;
+    font-size: 11px;
+    min-height: 16px;
+}
+.primary-button:disabled {
+    opacity: .65;
+    cursor: wait;
+}
+.system-status.offline-status {
+    color: #ff8585;
+}
+.status-dot.offline {
+    background: #ff6565;
+    box-shadow: 0 0 10px rgba(255, 101, 101, .5);
+}
