@@ -50,7 +50,8 @@
       <div id="allActivities" class="activity-cards"></div>
     </section>
 
-    <section class="view" id="builderView">\n      <div id="printHeading"></div>
+    <section class="view" id="builderView">
+      <div id="printHeading"></div>
       <section class="page-intro"><div><div class="eyebrow">ACTIVITY EDITOR</div><h2 id="builderHeading">Create Activity</h2><p>Add sections and train entries in the same structure as your activity notes.</p></div><button class="secondary-button" id="backToActivities"><i data-lucide="arrow-left"></i> Back</button></section>
       <div class="builder-layout">
         <section class="panel activity-details">
@@ -75,7 +76,7 @@
 <template id="sectionTemplate">
   <article class="section-card">
     <div class="section-card-head"><div class="section-title-wrap"><span class="section-index"></span><input class="section-name" placeholder="Section name (e.g. Pre Vadodara)" maxlength="120"></div><button class="icon-action remove-section" title="Remove section"><i data-lucide="trash-2"></i></button></div>
-    <div class="entry-table-wrap"><table class="entry-table"><thead><tr><th>TRAIN NO. & NAME</th><th>TIME / LOCATION</th><th>HALT / INFORMATION</th><th>CONSIST NAME</th><th></th></tr></thead><tbody class="entries-body"></tbody></table></div>
+    <div class="entry-table-wrap"><table class="entry-table"><thead><tr><th>TRAIN NO. & NAME</th><th>TIME / LOCATION</th><th>HALT / INFORMATION</th><th>CONSIST NAME</th><th>PATH FILE (.PAT)</th><th></th></tr></thead><tbody class="entries-body"></tbody></table></div>
     <button class="add-entry-btn"><i data-lucide="plus"></i> Add Train Entry</button>
   </article>
 </template>
@@ -85,6 +86,7 @@
     <td><input class="entry-time" placeholder="00:50:00 / BRC PF-1"></td>
     <td><input class="entry-info" placeholder="BH, AKV, OT BY PLAYER"></td>
     <td><input class="entry-consist" placeholder="12955 GANGAUR EXPRESS"></td>
+    <td class="path-file-cell"><label class="path-file-label">Choose .pat<input class="entry-path-file" type="file" accept=".pat"></label><span class="path-file-name">No path selected</span><button type="button" class="path-download-button" hidden>Download saved path</button></td>
     <td><button class="icon-action remove-entry" title="Remove entry"><i data-lucide="x"></i></button></td>
   </tr>
 </template>
