@@ -1,135 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open Rails Act Manager</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Rails Act Manager</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="app">
-    <aside class="sidebar">
-        <div class="brand">
-            <div class="brand-icon"><i data-lucide="train-front"></i></div>
-            <div>
-                <h2>OPEN RAILS</h2>
-                <span>ACT MANAGER</span>
-            </div>
-        </div>
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-icon"><i data-lucide="train-front"></i></div><div><h2>OPEN RAILS</h2><span>ACT MANAGER</span></div></div>
+    <div class="nav-label">WORKSPACE</div>
+    <nav class="navigation">
+      <a href="#" class="nav-link active" data-view="dashboard"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+      <a href="#" class="nav-link" data-view="activities"><i data-lucide="folder-open"></i><span>My Activities</span></a>
+      <a href="#" class="nav-link" data-view="builder"><i data-lucide="clipboard-list"></i><span>Activity Builder</span></a>
+    </nav>
+    <div class="sidebar-bottom"><div class="user-profile"><div class="brand-icon"><i data-lucide="database"></i></div><div class="user-details"><strong>Personal Workspace</strong><span>Local installation</span></div></div></div>
+  </aside>
 
-        <div class="nav-label">WORKSPACE</div>
-        <nav class="navigation">
-            <a href="/" class="nav-link active"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
-            <a href="#activities" class="nav-link"><i data-lucide="folder-open"></i><span>My Activities</span></a>
-        </nav>
+  <main class="main-content">
+    <header class="topbar">
+      <div><div class="breadcrumb">WORKSPACE / <span id="breadcrumbLabel">DASHBOARD</span></div><h1 id="pageTitle">Dashboard</h1></div>
+      <div class="topbar-right"><div class="system-status"><span class="status-dot"></span> FRONTEND PREVIEW</div></div>
+    </header>
 
-        <div class="sidebar-bottom">
-            <div class="user-profile">
-                <div class="brand-icon"><i data-lucide="database"></i></div>
-                <div class="user-details">
-                    <strong>Personal Workspace</strong>
-                    <span>Local installation</span>
-                </div>
-            </div>
-        </div>
-    </aside>
+    <section class="view active" id="dashboardView">
+      <section class="welcome-section">
+        <div><div class="eyebrow">ACTIVITY CONTROL CENTRE</div><h2>Open Rails <span>Workspace.</span></h2><p>Create, organise and print your Open Rails activity records.</p></div>
+        <button class="primary-button" id="newActivityBtn"><i data-lucide="plus"></i> Create New Activity</button>
+      </section>
+      <section class="stats-grid">
+        <div class="stat-card"><div class="stat-top"><span>TOTAL ACTIVITIES</span><i data-lucide="folder-open"></i></div><div class="stat-value" id="totalActivities">00</div><div class="stat-description">Saved in this browser</div></div>
+        <div class="stat-card"><div class="stat-top"><span>TOTAL SECTIONS</span><i data-lucide="map"></i></div><div class="stat-value" id="totalSections">00</div><div class="stat-description">Across all activities</div></div>
+        <div class="stat-card"><div class="stat-top"><span>TRAIN ENTRIES</span><i data-lucide="train-front"></i></div><div class="stat-value" id="totalEntries">00</div><div class="stat-description">Across all activities</div></div>
+      </section>
+      <section class="activities-section">
+        <div class="section-heading"><div><div class="eyebrow">YOUR WORKSPACE</div><h2>Recent Activities</h2></div><button class="text-button" data-go="activities">View all <i data-lucide="arrow-right"></i></button></div>
+        <div id="recentActivities" class="activity-cards"></div>
+      </section>
+    </section>
 
-    <main class="main-content">
-        <header class="topbar">
-            <div>
-                <div class="breadcrumb">WORKSPACE / DASHBOARD</div>
-                <h1>Dashboard</h1>
-            </div>
-            <div class="topbar-right">
-                <div class="system-status" id="apiStatus">
-                    <span class="status-dot"></span>
-                    CONNECTING
-                </div>
-            </div>
-        </header>
+    <section class="view" id="activitiesView">
+      <section class="page-intro"><div><div class="eyebrow">YOUR WORKSPACE</div><h2>My Activities</h2><p>All activity records you have created.</p></div><button class="primary-button" id="newActivityBtn2"><i data-lucide="plus"></i> Create Activity</button></section>
+      <div id="allActivities" class="activity-cards"></div>
+    </section>
 
-        <section class="welcome-section">
-            <div>
-                <div class="eyebrow">ACTIVITY CONTROL CENTRE</div>
-                <h2>Open Rails <span>Workspace.</span></h2>
-                <p>Manage your Open Rails activities from one organised workspace.</p>
-            </div>
-            <button class="primary-button" id="createActivityBtn">
-                <i data-lucide="plus"></i>
-                Create New Activity
-            </button>
+    <section class="view" id="builderView">
+      <section class="page-intro"><div><div class="eyebrow">ACTIVITY EDITOR</div><h2 id="builderHeading">Create Activity</h2><p>Add sections and train entries in the same structure as your activity notes.</p></div><button class="secondary-button" id="backToActivities"><i data-lucide="arrow-left"></i> Back</button></section>
+      <div class="builder-layout">
+        <section class="panel activity-details">
+          <div class="panel-heading"><i data-lucide="file-text"></i><div><h3>Activity Details</h3><p>Basic information about this activity</p></div></div>
+          <div class="form-grid">
+            <div class="field"><label for="activityName">Activity Name *</label><input id="activityName" maxlength="150" placeholder="e.g. 12218 Kerala Sampark Kranti Express" required></div>
+            <div class="field"><label for="routeName">Route Name</label><input id="routeName" maxlength="150" placeholder="e.g. Mumbai Central - Vadodara"></div>
+            <div class="field"><label for="activityDay">Day</label><select id="activityDay"><option value="">Select day</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select></div>
+          </div>
         </section>
-
-        <section class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-top">
-                    <span>TOTAL ACTIVITIES</span>
-                    <i data-lucide="folder-open"></i>
-                </div>
-                <div class="stat-value" id="totalActivities">—</div>
-                <div class="stat-description">Saved in your workspace</div>
-            </div>
+        <section class="sections-area">
+          <div class="section-heading"><div><div class="eyebrow">ACTIVITY STRUCTURE</div><h2>Sections & Train Entries</h2></div><button class="primary-button" id="addSectionBtn"><i data-lucide="plus"></i> Add Section</button></div>
+          <div id="sectionsContainer" class="sections-container"></div>
+          <div class="builder-footer"><span id="builderMessage">Changes are saved in this browser when you click Save Activity.</span><div class="builder-actions"><button class="secondary-button" id="cancelBuilder">Cancel</button><button class="primary-button" id="saveActivityBtn"><i data-lucide="save"></i> Save Activity</button></div></div>
         </section>
-
-        <section class="activities-section" id="activities">
-            <div class="section-heading">
-                <div>
-                    <div class="eyebrow">YOUR WORKSPACE</div>
-                    <h2>Activities</h2>
-                </div>
-            </div>
-
-            <div class="activity-table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ACTIVITY NAME</th>
-                            <th>ROUTE</th>
-                            <th>STATUS</th>
-                            <th>CREATED</th>
-                        </tr>
-                    </thead>
-                    <tbody id="activityTable">
-                        <tr><td colspan="4" class="empty-state">Loading activities...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <footer>OPEN RAILS ACT MANAGER <span>•</span> PERSONAL WORKSPACE</footer>
-    </main>
+      </div>
+    </section>
+    <footer>OPEN RAILS ACT MANAGER <span>•</span> PERSONAL WORKSPACE</footer>
+  </main>
 </div>
 
-<div class="modal-overlay" id="activityModal">
-    <div class="modal">
-        <div class="modal-heading">
-            <div>
-                <div class="eyebrow">NEW WORKSPACE ITEM</div>
-                <h2>Create Activity</h2>
-            </div>
-            <button class="close-btn" id="closeModal" type="button"><i data-lucide="x"></i></button>
-        </div>
-
-        <form id="activityForm">
-            <label for="activityName">Activity Name</label>
-            <input type="text" id="activityName" maxlength="150" required>
-
-            <label for="routeName">Route Name</label>
-            <input type="text" id="routeName" maxlength="150" required>
-
-            <div id="formError" class="form-error" role="alert"></div>
-            <div class="modal-actions">
-                <button type="button" class="secondary-button" id="cancelModal">Cancel</button>
-                <button type="submit" class="primary-button" id="saveActivityBtn">Create Activity</button>
-            </div>
-        </form>
-    </div>
-</div>
-
+<template id="sectionTemplate">
+  <article class="section-card">
+    <div class="section-card-head"><div class="section-title-wrap"><span class="section-index"></span><input class="section-name" placeholder="Section name (e.g. Pre Vadodara)" maxlength="120"></div><button class="icon-action remove-section" title="Remove section"><i data-lucide="trash-2"></i></button></div>
+    <div class="entry-table-wrap"><table class="entry-table"><thead><tr><th>TRAIN NO. & NAME</th><th>TIME / LOCATION</th><th>HALT / INFORMATION</th><th>CONSIST NAME</th><th></th></tr></thead><tbody class="entries-body"></tbody></table></div>
+    <button class="add-entry-btn"><i data-lucide="plus"></i> Add Train Entry</button>
+  </article>
+</template>
+<template id="entryTemplate">
+  <tr class="entry-row">
+    <td><input class="entry-train" placeholder="12955 GANGAUR EXPRESS"></td>
+    <td><input class="entry-time" placeholder="00:50:00 / BRC PF-1"></td>
+    <td><input class="entry-info" placeholder="BH, AKV, OT BY PLAYER"></td>
+    <td><input class="entry-consist" placeholder="12955 GANGAUR EXPRESS"></td>
+    <td><button class="icon-action remove-entry" title="Remove entry"><i data-lucide="x"></i></button></td>
+  </tr>
+</template>
 <script src="/js/script.js"></script>
 </body>
 </html>
