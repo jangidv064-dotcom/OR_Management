@@ -1,4 +1,5 @@
-const STORAGE_KEY = "orActManager.activities.v1";
+
+const API_URL = "/api/activities";
 
 const views = {
     dashboard: document.getElementById("dashboardView"),
@@ -6,34 +7,48 @@ const views = {
     builder: document.getElementById("builderView")
 };
 
-let activities = loadActivities();
+let activities = [];
 let editingId = null;
 let sectionCounter = 0;
 
 
 // ==========================================
-// STORAGE AND HELPERS
+// API AND HELPERS
 // ==========================================
 
-function loadActivities() {
+async function apiRequest(url, options = {}) {
+    const response = await fetch(url, {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            ...options.headers
+        }
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+        throw new Error(data.error || "Something went wrong.");
+    }
+
+    return data;
+}
+
+
+async function loadActivities() {
     try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        activities = await apiRequest(API_URL);
+        renderLists();
     } catch (error) {
         console.error("Could not load activities:", error);
-        return [];
+
+        alert(
+            "Could not connect to the backend.\n" +
+            "Make sure Flask is running at http://127.0.0.1:5000"
+        );
     }
 }
 
-function persist() {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(activities));
-        return true;
-    } catch (error) {
-        console.error("Could not save activities:", error);
-        alert("Browser storage is full. Try using a smaller .pat file.");
-        return false;
-    }
-}
 
 function escapeHtml(value = "") {
     return String(value).replace(/[&<>"']/g, char => ({
@@ -44,6 +59,7 @@ function escapeHtml(value = "") {
         "'": "&#39;"
     })[char]);
 }
+
 
 function refreshIcons() {
     if (window.lucide) {
@@ -73,7 +89,9 @@ function showView(name) {
         builder: editingId ? "Edit Activity" : "Activity Builder"
     };
 
-    document.getElementById("pageTitle").textContent = labels[name] || "Dashboard";
+    document.getElementById("pageTitle").textContent =
+        labels[name] || "Dashboard";
+
     document.getElementById("breadcrumbLabel").textContent =
         (labels[name] || "Dashboard").toUpperCase();
 
@@ -97,8 +115,10 @@ function emptyPanel(title, description) {
         '</div>';
 }
 
+
 function activityCard(activity) {
     const sections = activity.sections || [];
+
     const count = sections.reduce(
         (total, section) => total + (section.entries || []).length,
         0
@@ -118,6 +138,7 @@ function activityCard(activity) {
         '</div>' +
     '</article>';
 }
+
 
 function renderLists() {
     const totalSections = activities.reduce(
@@ -143,14 +164,18 @@ function renderLists() {
         String(totalEntries).padStart(2, "0");
 
     document.getElementById("recentActivities").innerHTML = activities.length
-        ? activities.slice(-4).reverse().map(activityCard).join("")
-        : emptyPanel("No activities yet",
-            "Create your first activity to start building your Open Rails records.");
+        ? activities.slice(0, 4).map(activityCard).join("")
+        : emptyPanel(
+            "No activities yet",
+            "Create your first activity to start building your Open Rails records."
+        );
 
     document.getElementById("allActivities").innerHTML = activities.length
-        ? activities.slice().reverse().map(activityCard).join("")
-        : emptyPanel("Your workspace is empty",
-            "Use Create Activity to add your first activity.");
+        ? activities.map(activityCard).join("")
+        : emptyPanel(
+            "Your workspace is empty",
+            "Use Create Activity to add your first activity."
+        );
 
     refreshIcons();
 }
@@ -164,7 +189,9 @@ function resetBuilder() {
     editingId = null;
     sectionCounter = 0;
 
-    document.getElementById("builderHeading").textContent = "Create Activity";
+    document.getElementById("builderHeading").textContent =
+        "Create Activity";
+
     document.getElementById("activityName").value = "";
     document.getElementById("routeName").value = "";
     document.getElementById("activityDay").value = "";
@@ -172,6 +199,7 @@ function resetBuilder() {
     document.getElementById("sectionsContainer").innerHTML =
         '<div class="no-sections">No sections added yet. Click “Add Section” to begin.</div>';
 }
+
 
 function openNew() {
     resetBuilder();
@@ -206,6 +234,7 @@ function addSection(data = {}) {
     });
 
     document.getElementById("sectionsContainer").appendChild(card);
+
     refreshIcons();
 }
 
@@ -226,17 +255,22 @@ function addEntry(card, data = {}) {
     row.querySelector(".entry-consist").value = data.consist || "";
 
     const savedPath = data.pathFile || null;
+
     row.dataset.pathFile = JSON.stringify(savedPath);
 
     updatePathFileDisplay(row, savedPath);
 
     body.appendChild(fragment);
+
     refreshIcons();
 }
 
+
 function updatePathFileDisplay(row, pathFile) {
     const nameLabel = row.querySelector(".path-file-name");
-    const downloadButton = row.querySelector(".download-path-file");
+
+    // This class matches the latest index.html.
+    const downloadButton = row.querySelector(".path-download-button");
 
     if (!nameLabel || !downloadButton) {
         return;
@@ -250,6 +284,7 @@ function updatePathFileDisplay(row, pathFile) {
         downloadButton.hidden = true;
     }
 }
+
 
 async function handlePathFileSelection(input) {
     const file = input.files && input.files[0];
@@ -275,13 +310,18 @@ async function handlePathFileSelection(input) {
         };
 
         row.dataset.pathFile = JSON.stringify(pathFile);
+
         updatePathFileDisplay(row, pathFile);
+
     } catch (error) {
         console.error("Could not read .pat file:", error);
+
         alert("The selected path file could not be read.");
+
         input.value = "";
     }
 }
+
 
 function downloadPathFile(row) {
     let pathFile;
@@ -308,6 +348,7 @@ function downloadPathFile(row) {
     link.download = pathFile.name || "activity-path.pat";
 
     document.body.appendChild(link);
+
     link.click();
     link.remove();
 
@@ -316,7 +357,7 @@ function downloadPathFile(row) {
 
 
 // ==========================================
-// COLLECT AND SAVE ACTIVITY
+// COLLECT ACTIVITY DATA
 // ==========================================
 
 function collectBuilder() {
@@ -324,7 +365,9 @@ function collectBuilder() {
 
     if (!name) {
         alert("Please enter an Activity Name.");
+
         document.getElementById("activityName").focus();
+
         return null;
     }
 
@@ -345,15 +388,20 @@ function collectBuilder() {
                 consist: row.querySelector(".entry-consist").value.trim(),
                 pathFile: pathFile
             };
+
         }).filter(entry =>
-            entry.train || entry.time || entry.info ||
-            entry.consist || entry.pathFile
+            entry.train ||
+            entry.time ||
+            entry.info ||
+            entry.consist ||
+            entry.pathFile
         );
 
         return {
             name: card.querySelector(".section-name").value.trim(),
             entries: entries
         };
+
     }).filter(section => section.name || section.entries.length);
 
     if (!sections.length) {
@@ -367,55 +415,115 @@ function collectBuilder() {
     }
 
     return {
-        id: editingId || String(Date.now()),
         name: name,
         route: document.getElementById("routeName").value.trim(),
         day: document.getElementById("activityDay").value,
-        sections: sections,
-        updatedAt: new Date().toISOString()
+        sections: sections
     };
 }
 
-function saveBuilder() {
+
+// ==========================================
+// SAVE ACTIVITY TO MYSQL
+// ==========================================
+
+async function saveBuilder() {
     const item = collectBuilder();
 
     if (!item) {
         return;
     }
 
-    const index = activities.findIndex(activity => activity.id === item.id);
+    const saveButton = document.getElementById("saveActivityBtn");
 
-    if (index >= 0) {
-        activities[index] = item;
-    } else {
-        activities.push(item);
-    }
+    saveButton.disabled = true;
 
-    if (persist()) {
+    try {
+        let savedActivity;
+
+        if (editingId !== null) {
+            // Update existing activity.
+            savedActivity = await apiRequest(
+                `${API_URL}/${editingId}`,
+                {
+                    method: "PUT",
+                    body: JSON.stringify(item)
+                }
+            );
+
+            const index = activities.findIndex(
+                activity => String(activity.id) === String(editingId)
+            );
+
+            if (index !== -1) {
+                activities[index] = savedActivity;
+            }
+
+        } else {
+            // Create a new activity.
+            savedActivity = await apiRequest(
+                API_URL,
+                {
+                    method: "POST",
+                    body: JSON.stringify(item)
+                }
+            );
+
+            activities.unshift(savedActivity);
+        }
+
+        // Keep the list in updated-date order.
+        activities.sort((a, b) =>
+            new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0)
+        );
+
+        editingId = null;
+
         renderLists();
         showView("activities");
+
+        alert("Activity saved successfully!");
+
+    } catch (error) {
+        console.error("Could not save activity:", error);
+
+        alert("Could not save activity:\n" + error.message);
+
+    } finally {
+        saveButton.disabled = false;
     }
 }
 
 
 // ==========================================
-// EDIT AND DELETE ACTIVITY
+// EDIT ACTIVITY
 // ==========================================
 
 function editActivity(id) {
-    const activity = activities.find(item => item.id === id);
+    const activity = activities.find(
+        item => String(item.id) === String(id)
+    );
 
     if (!activity) {
+        alert("Activity not found.");
         return;
     }
 
-    editingId = id;
+    editingId = activity.id;
     sectionCounter = 0;
 
-    document.getElementById("builderHeading").textContent = "Edit Activity";
-    document.getElementById("activityName").value = activity.name;
-    document.getElementById("routeName").value = activity.route || "";
-    document.getElementById("activityDay").value = activity.day || "";
+    document.getElementById("builderHeading").textContent =
+        "Edit Activity";
+
+    document.getElementById("activityName").value =
+        activity.name || "";
+
+    document.getElementById("routeName").value =
+        activity.route || "";
+
+    document.getElementById("activityDay").value =
+        activity.day || "";
+
     document.getElementById("sectionsContainer").innerHTML = "";
 
     (activity.sections || []).forEach(section => {
@@ -430,8 +538,15 @@ function editActivity(id) {
     showView("builder");
 }
 
-function deleteActivity(id) {
-    const activity = activities.find(item => item.id === id);
+
+// ==========================================
+// DELETE ACTIVITY FROM MYSQL
+// ==========================================
+
+async function deleteActivity(id) {
+    const activity = activities.find(
+        item => String(item.id) === String(id)
+    );
 
     if (!activity) {
         return;
@@ -441,9 +556,27 @@ function deleteActivity(id) {
         return;
     }
 
-    activities = activities.filter(item => item.id !== id);
-    persist();
-    renderLists();
+    try {
+        await apiRequest(
+            `${API_URL}/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        activities = activities.filter(
+            item => String(item.id) !== String(id)
+        );
+
+        renderLists();
+
+        alert("Activity deleted successfully!");
+
+    } catch (error) {
+        console.error("Could not delete activity:", error);
+
+        alert("Could not delete activity:\n" + error.message);
+    }
 }
 
 
@@ -463,8 +596,11 @@ function setPrintHeading() {
         "</p><hr>";
 }
 
+
 function downloadPdf(id) {
-    const activity = activities.find(item => item.id === id);
+    const activity = activities.find(
+        item => String(item.id) === String(id)
+    );
 
     if (!activity) {
         return;
@@ -542,7 +678,8 @@ document.addEventListener("click", event => {
         addEntry(addEntryButton.closest(".section-card"));
     }
 
-    const downloadPathButton = event.target.closest(".download-path-file");
+    // Matches the path-download-button class in index.html.
+    const downloadPathButton = event.target.closest(".path-download-button");
 
     if (downloadPathButton) {
         downloadPathFile(downloadPathButton.closest(".entry-row"));
@@ -566,6 +703,7 @@ document.addEventListener("change", event => {
 // ==========================================
 
 document.getElementById("newActivityBtn").addEventListener("click", openNew);
+
 document.getElementById("newActivityBtn2").addEventListener("click", openNew);
 
 document.getElementById("addSectionBtn").addEventListener("click", () => {
@@ -590,5 +728,6 @@ document.getElementById("backToActivities").addEventListener("click", () => {
 document.getElementById("sectionsContainer").innerHTML =
     '<div class="no-sections">No sections added yet. Click “Add Section” to begin.</div>';
 
-renderLists();
 showView("dashboard");
+
+loadActivities();
