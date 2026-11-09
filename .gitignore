@@ -1,12 +1,19 @@
 # Python
 __pycache__/
-*.py[cod]
-.venv/
+*.pyc
 venv/
-.env
+.venv/
 
-# Editor / OS
+# Environment variables
+.env
+backend/.env
+
+# Uploaded path files
+backend/uploads/paths/*
+
+# Keep upload folder structure
+!backend/uploads/paths/.gitkeep
+
+# IDE
 .vscode/
 .idea/
-.DS_Store
-Thumbs.db
