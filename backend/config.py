@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -7,6 +8,11 @@ load_dotenv()
 class Config:
 
     SECRET_KEY = os.getenv("SECRET_KEY")
+
+    if not SECRET_KEY:
+        raise RuntimeError(
+            "SECRET_KEY is missing from the .env file."
+        )
 
     DB_HOST = os.getenv("DB_HOST", "localhost")
     DB_PORT = os.getenv("DB_PORT", "3306")
@@ -20,3 +26,9 @@ class Config:
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_SECURE = False
+
+    PERMANENT_SESSION_LIFETIME = timedelta(days=30)

@@ -1,10 +1,19 @@
 import os
 import uuid
 
-from flask import Blueprint, request, jsonify, current_app, send_from_directory
+from flask import (
+    Blueprint,
+    request,
+    jsonify,
+    current_app,
+    send_from_directory,
+    session
+)
+
 from werkzeug.utils import secure_filename
 
 from models import db, Activity, Section, TrainEntry
+from auth_utils import login_required
 
 
 activities_bp = Blueprint(
@@ -73,6 +82,15 @@ def activity_to_dict(activity):
 
     return result
 
+
+def get_owned_activity(activity_id):
+
+    return Activity.query.filter_by(
+        id=activity_id,
+        user_id=session["user_id"]
+    ).first()
+
+
 def save_path_file(entry, path_data):
 
     if not path_data:
@@ -96,9 +114,16 @@ def save_path_file(entry, path_data):
 
     storage_name = f"{uuid.uuid4().hex}.pat"
 
-    file_path = os.path.join(upload_folder, storage_name)
+    file_path = os.path.join(
+        upload_folder,
+        storage_name
+    )
 
-    with open(file_path, "w", encoding="utf-8") as file:
+    with open(
+        file_path,
+        "w",
+        encoding="utf-8"
+    ) as file:
         file.write(content)
 
     entry.path_original_name = filename
@@ -157,9 +182,12 @@ def replace_activity_data(activity, data):
 
 
 @activities_bp.route("", methods=["GET"])
+@login_required
 def get_activities():
 
-    activities = Activity.query.order_by(
+    activities = Activity.query.filter_by(
+        user_id=session["user_id"]
+    ).order_by(
         Activity.updated_at.desc()
     ).all()
 
@@ -170,14 +198,21 @@ def get_activities():
 
 
 @activities_bp.route("", methods=["POST"])
+@login_required
 def create_activity():
 
     data = request.get_json(silent=True) or {}
 
-    if not data.get("name", "").strip():
-        return jsonify({"error": "Activity name is required."}), 400
+    name = data.get("name", "")
 
-    activity = Activity()
+    if not isinstance(name, str) or not name.strip():
+        return jsonify({
+            "error": "Activity name is required."
+        }), 400
+
+    activity = Activity(
+        user_id=session["user_id"]
+    )
 
     try:
         replace_activity_data(activity, data)
@@ -185,59 +220,89 @@ def create_activity():
         db.session.add(activity)
         db.session.commit()
 
-        return jsonify(activity_to_dict(activity)), 201
+        return jsonify(
+            activity_to_dict(activity)
+        ), 201
 
-    except Exception as error:
+    except Exception:
         db.session.rollback()
-        current_app.logger.exception("Activity creation failed")
 
-        return jsonify({"error": str(error)}), 500
+        current_app.logger.exception(
+            "Activity creation failed"
+        )
+
+        return jsonify({
+            "error": "Could not create activity."
+        }), 500
 
 
 @activities_bp.route("/<int:activity_id>", methods=["GET"])
+@login_required
 def get_activity(activity_id):
 
-    activity = db.session.get(Activity, activity_id)
+    activity = get_owned_activity(activity_id)
 
     if not activity:
-        return jsonify({"error": "Activity not found."}), 404
+        return jsonify({
+            "error": "Activity not found."
+        }), 404
 
-    return jsonify(activity_to_dict(activity))
+    return jsonify(
+        activity_to_dict(activity)
+    )
 
 
 @activities_bp.route("/<int:activity_id>", methods=["PUT"])
+@login_required
 def update_activity(activity_id):
 
-    activity = db.session.get(Activity, activity_id)
+    activity = get_owned_activity(activity_id)
 
     if not activity:
-        return jsonify({"error": "Activity not found."}), 404
+        return jsonify({
+            "error": "Activity not found."
+        }), 404
 
     data = request.get_json(silent=True) or {}
 
-    if not data.get("name", "").strip():
-        return jsonify({"error": "Activity name is required."}), 400
+    name = data.get("name", "")
+
+    if not isinstance(name, str) or not name.strip():
+        return jsonify({
+            "error": "Activity name is required."
+        }), 400
 
     try:
         replace_activity_data(activity, data)
+
         db.session.commit()
 
-        return jsonify(activity_to_dict(activity))
+        return jsonify(
+            activity_to_dict(activity)
+        )
 
-    except Exception as error:
+    except Exception:
         db.session.rollback()
-        current_app.logger.exception("Activity update failed")
 
-        return jsonify({"error": str(error)}), 500
+        current_app.logger.exception(
+            "Activity update failed"
+        )
+
+        return jsonify({
+            "error": "Could not update activity."
+        }), 500
 
 
 @activities_bp.route("/<int:activity_id>", methods=["DELETE"])
+@login_required
 def delete_activity(activity_id):
 
-    activity = db.session.get(Activity, activity_id)
+    activity = get_owned_activity(activity_id)
 
     if not activity:
-        return jsonify({"error": "Activity not found."}), 404
+        return jsonify({
+            "error": "Activity not found."
+        }), 404
 
     try:
         for section in activity.sections:
@@ -251,23 +316,40 @@ def delete_activity(activity_id):
             "message": "Activity deleted successfully."
         })
 
-    except Exception as error:
+    except Exception:
         db.session.rollback()
-        current_app.logger.exception("Activity deletion failed")
 
-        return jsonify({"error": str(error)}), 500
+        current_app.logger.exception(
+            "Activity deletion failed"
+        )
+
+        return jsonify({
+            "error": "Could not delete activity."
+        }), 500
 
 
 @activities_bp.route(
     "/entries/<int:entry_id>/path",
     methods=["GET"]
 )
+@login_required
 def download_path_file(entry_id):
 
-    entry = db.session.get(TrainEntry, entry_id)
+    entry = (
+        TrainEntry.query
+        .join(Section)
+        .join(Activity)
+        .filter(
+            TrainEntry.id == entry_id,
+            Activity.user_id == session["user_id"]
+        )
+        .first()
+    )
 
     if not entry or not entry.path_storage_name:
-        return jsonify({"error": "Path file not found."}), 404
+        return jsonify({
+            "error": "Path file not found."
+        }), 404
 
     return send_from_directory(
         current_app.config["PATH_UPLOAD_FOLDER"],

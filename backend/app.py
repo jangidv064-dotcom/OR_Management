@@ -1,18 +1,28 @@
 import os
 
-from flask import Flask, send_from_directory
-from flask_cors import CORS
+from flask import (
+    Flask,
+    send_from_directory,
+    session,
+    redirect,
+    url_for
+)
 
 from config import Config
 from models import db
+
 from routes.activities import activities_bp
+from routes.auth import auth_bp
 
 
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
 )
 
-FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+FRONTEND_DIR = os.path.join(
+    BASE_DIR,
+    "frontend"
+)
 
 
 def create_app():
@@ -32,18 +42,36 @@ def create_app():
         exist_ok=True
     )
 
-    CORS(app)
-
     db.init_app(app)
 
+    app.register_blueprint(auth_bp)
     app.register_blueprint(activities_bp)
 
     @app.route("/")
     def home():
-        return send_from_directory(FRONTEND_DIR, "index.html")
+
+        if "user_id" not in session:
+            return redirect(url_for("login_page"))
+
+        return send_from_directory(
+            FRONTEND_DIR,
+            "index.html"
+        )
+
+    @app.route("/login")
+    def login_page():
+
+        if "user_id" in session:
+            return redirect(url_for("home"))
+
+        return send_from_directory(
+            FRONTEND_DIR,
+            "login.html"
+        )
 
     @app.route("/css/<path:filename>")
     def css_files(filename):
+
         return send_from_directory(
             os.path.join(FRONTEND_DIR, "css"),
             filename
@@ -51,6 +79,7 @@ def create_app():
 
     @app.route("/js/<path:filename>")
     def js_files(filename):
+
         return send_from_directory(
             os.path.join(FRONTEND_DIR, "js"),
             filename
@@ -58,8 +87,11 @@ def create_app():
 
     @app.route("/api/health")
     def health():
+
         try:
-            db.session.execute(db.text("SELECT 1"))
+            db.session.execute(
+                db.text("SELECT 1")
+            )
 
             return {
                 "status": "running",
@@ -67,6 +99,7 @@ def create_app():
             }
 
         except Exception:
+
             return {
                 "status": "error",
                 "database": "disconnected"
@@ -82,6 +115,7 @@ app = create_app()
 
 
 if __name__ == "__main__":
+
     app.run(
         host="127.0.0.1",
         port=5000,
