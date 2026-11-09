@@ -11,3 +11,79 @@ footer{color:#627084;font-size:9px;letter-spacing:1px;margin:40px 0 22px}footer 
 @media(max-width:1000px){.main-content{padding:0 24px}.form-grid{grid-template-columns:1fr 1fr}.field:first-child{grid-column:1/-1}}@media(max-width:760px){.sidebar{width:65px;padding:20px 9px}.brand{padding:0;justify-content:center}.brand>div:last-child,.nav-label,.nav-link span,.user-details{display:none}.nav-link{justify-content:center;padding:13px 5px}.user-profile{justify-content:center;padding-top:15px}.main-content{padding:0 14px}.welcome-section,.page-intro{align-items:flex-start;flex-direction:column}.welcome-section h2,.page-intro h2{font-size:21px}.stats-grid{grid-template-columns:1fr 1fr;gap:9px}.stat-card{padding:13px}.activity-cards{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field:first-child{grid-column:auto}.builder-footer{align-items:flex-start;flex-direction:column}.builder-actions{width:100%;justify-content:flex-end}.system-status{font-size:8px}}
 @media print{#printHeading{display:block!important;margin-bottom:18px}#printHeading h1{font-size:20px;margin-bottom:6px;color:#111}#printHeading p{font-size:11px;color:#333;margin-bottom:10px}#printHeading hr{border:0;border-top:1px solid #999}body{background:#fff;color:#111;font-family:Arial,sans-serif}.sidebar,.topbar,.welcome-section,.stats-grid,.activities-section,.page-intro,.activity-details,.builder-footer,.add-entry-btn,.remove-section,.remove-entry,footer{display:none!important}.main-content{padding:0!important}.view{display:none!important}#builderView{display:block!important}.sections-area{margin:0}.section-heading{display:none}.sections-container{gap:16px}.section-card{background:#fff;border:0;border-radius:0;padding:0;break-inside:avoid}.section-card-head{margin-bottom:7px}.section-index{background:#eee;color:#111}.section-name{border:0!important;background:#fff!important;color:#111!important;font-size:15px;padding:3px!important}.entry-table{min-width:0}.entry-table th{background:#eee!important;color:#111!important;font-size:9px}.entry-table td{border-bottom:1px solid #ddd}.entry-row input{border:0!important;background:#fff!important;color:#111!important;padding:5px 3px;font-size:10px}.entry-table th:last-child,.entry-table td:last-child{display:none}#printHeading{display:block!important} }
 #printHeading{display:none}
+
+
+/* Optional Open Rails .pat path-file field */
+.entry-table th:nth-child(5) {
+    min-width: 150px;
+}
+
+.path-file-cell {
+    min-width: 150px;
+    vertical-align: middle;
+}
+
+.path-file-label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 9px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--amber);
+    background: transparent;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.path-file-label:hover {
+    border-color: var(--amber);
+}
+
+.path-file-label input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.path-file-name {
+    display: block;
+    max-width: 145px;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 9px;
+    overflow-wrap: anywhere;
+}
+
+.path-download-button {
+    display: block;
+    margin-top: 5px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--green);
+    font-size: 9px;
+    cursor: pointer;
+}
+
+.path-download-button[hidden] {
+    display: none;
+}
+
+@media print {
+    .path-file-label,
+    .path-download-button {
+        display: none !important;
+    }
+
+    .path-file-name {
+        color: #222 !important;
+        max-width: none;
+        font-size: 9px;
+    }
+}
