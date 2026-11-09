@@ -1,97 +1,27 @@
+const STORAGE_KEY = "orActManager.activities.v1";
+const views = {dashboard:document.getElementById("dashboardView"),activities:document.getElementById("activitiesView"),builder:document.getElementById("builderView")};
+let activities = loadActivities();
+let editingId = null;
+let sectionCounter = 0;
 
-const createBtn = document.getElementById("createActivityBtn");
-const modal = document.getElementById("activityModal");
-const closeBtn = document.getElementById("closeModal");
-const cancelBtn = document.getElementById("cancelModal");
-const form = document.getElementById("activityForm");
-const table = document.getElementById("activityTable");
+function loadActivities(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]")}catch{return []}}
+function persist(){localStorage.setItem(STORAGE_KEY,JSON.stringify(activities))}
+function escapeHtml(value=""){return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function showView(name){Object.entries(views).forEach(([key,el])=>el.classList.toggle("active",key===name));document.querySelectorAll(".nav-link").forEach(a=>a.classList.toggle("active",a.dataset.view===name));const labels={dashboard:"Dashboard",activities:"My Activities",builder:editingId?"Edit Activity":"Activity Builder"};document.getElementById("pageTitle").textContent=labels[name];document.getElementById("breadcrumbLabel").textContent=labels[name].toUpperCase();if(name!=="builder")renderLists();if(window.lucide)lucide.createIcons()}
+function emptyPanel(title,description){return '<div class="empty-panel"><i data-lucide="folder-open"></i><h3>'+escapeHtml(title)+'</h3><p>'+escapeHtml(description)+'</p></div>'}
+function activityCard(a){const count=(a.sections||[]).reduce((n,s)=>n+(s.entries||[]).length,0);return '<article class="activity-card"><div class="activity-icon"><i data-lucide="train-front"></i></div><div class="activity-card-main"><h3>'+escapeHtml(a.name)+'</h3><p>'+escapeHtml(a.route||"Route not specified")+' · '+(a.sections||[]).length+' sections · '+count+' entries</p></div><div class="activity-card-actions"><button class="icon-action" data-edit="'+a.id+'" title="Edit"><i data-lucide="pencil"></i></button><button class="icon-action" data-pdf="'+a.id+'" title="Download PDF"><i data-lucide="file-down"></i></button><button class="icon-action" data-delete="'+a.id+'" title="Delete"><i data-lucide="trash-2"></i></button></div></article>'}
+function renderLists(){document.getElementById("totalActivities").textContent=String(activities.length).padStart(2,"0");document.getElementById("totalSections").textContent=String(activities.reduce((n,a)=>n+(a.sections||[]).length,0)).padStart(2,"0");document.getElementById("totalEntries").textContent=String(activities.reduce((n,a)=>n+(a.sections||[]).reduce((x,s)=>x+(s.entries||[]).length,0),0)).padStart(2,"0");document.getElementById("recentActivities").innerHTML=activities.length?activities.slice(-4).reverse().map(activityCard).join(""):emptyPanel("No activities yet","Create your first activity to start building your Open Rails records.");document.getElementById("allActivities").innerHTML=activities.length?activities.slice().reverse().map(activityCard).join(""):emptyPanel("Your workspace is empty","Use Create Activity to add your first activity.");if(window.lucide)lucide.createIcons()}
+function resetBuilder(){editingId=null;sectionCounter=0;document.getElementById("builderHeading").textContent="Create Activity";document.getElementById("activityName").value="";document.getElementById("routeName").value="";document.getElementById("activityDay").value="";document.getElementById("sectionsContainer").innerHTML='<div class="no-sections">No sections added yet. Click “Add Section” to begin.</div>'}
+function openNew(){resetBuilder();showView("builder")}
+function addSection(data={}){const empty=document.querySelector(".no-sections");if(empty)empty.remove();const node=document.getElementById("sectionTemplate").content.cloneNode(true);const card=node.querySelector(".section-card");const index=++sectionCounter;card.querySelector(".section-index").textContent=String(index).padStart(2,"0");card.querySelector(".section-name").value=data.name||"";data.entries?.forEach(entry=>addEntry(card,entry));document.getElementById("sectionsContainer").appendChild(card);if(window.lucide)lucide.createIcons()}
+function addEntry(card,data={}){const body=card.querySelector(".entries-body");const row=document.getElementById("entryTemplate").content.cloneNode(true);row.querySelector(".entry-train").value=data.train||"";row.querySelector(".entry-time").value=data.time||"";row.querySelector(".entry-info").value=data.info||"";row.querySelector(".entry-consist").value=data.consist||"";body.appendChild(row);if(window.lucide)lucide.createIcons()}
+function collectBuilder(){const name=document.getElementById("activityName").value.trim();if(!name){alert("Please enter an Activity Name.");document.getElementById("activityName").focus();return null}const sections=[...document.querySelectorAll(".section-card")].map(card=>({name:card.querySelector(".section-name").value.trim(),entries:[...card.querySelectorAll(".entry-row")].map(row=>({train:row.querySelector(".entry-train").value.trim(),time:row.querySelector(".entry-time").value.trim(),info:row.querySelector(".entry-info").value.trim(),consist:row.querySelector(".entry-consist").value.trim()})).filter(e=>e.train||e.time||e.info||e.consist)})).filter(s=>s.name||s.entries.length);if(!sections.length){alert("Add at least one section.");return null}if(sections.some(s=>!s.name)){alert("Please enter a name for every section.");return null}return {id:editingId||String(Date.now()),name,route:document.getElementById("routeName").value.trim(),day:document.getElementById("activityDay").value,sections,updatedAt:new Date().toISOString()}}
+function saveBuilder(){const item=collectBuilder();if(!item)return;const idx=activities.findIndex(a=>a.id===item.id);if(idx>=0)activities[idx]=item;else activities.push(item);persist();renderLists();showView("activities")}
+function editActivity(id){const a=activities.find(x=>x.id===id);if(!a)return;editingId=id;sectionCounter=0;document.getElementById("builderHeading").textContent="Edit Activity";document.getElementById("activityName").value=a.name;document.getElementById("routeName").value=a.route||"";document.getElementById("activityDay").value=a.day||"";document.getElementById("sectionsContainer").innerHTML="";(a.sections||[]).forEach(s=>addSection(s));if(!a.sections?.length)document.getElementById("sectionsContainer").innerHTML='<div class="no-sections">No sections added yet. Click “Add Section” to begin.</div>';showView("builder")}
+function deleteActivity(id){const a=activities.find(x=>x.id===id);if(!a||!confirm('Delete "'+a.name+'"? This cannot be undone.'))return;activities=activities.filter(x=>x.id!==id);persist();renderLists()}
+function setPrintHeading(){const name=document.getElementById("activityName").value.trim();const route=document.getElementById("routeName").value.trim();const day=document.getElementById("activityDay").value;document.getElementById("printHeading").innerHTML="<h1>"+escapeHtml(name)+"</h1><p>"+escapeHtml(route)+(day?" · "+escapeHtml(day):"")+"</p><hr>"}\nfunction downloadPdf(id){const a=activities.find(x=>x.id===id);if(!a)return;editActivity(id);setTimeout(()=>{setPrintHeading();window.print()},100)}
 
-let activityCount = 3;
-
-// Open modal
-createBtn.addEventListener("click", () => {
-    modal.classList.add("show");
-});
-
-// Close modal
-function closeModal() {
-    modal.classList.remove("show");
-    form.reset();
-}
-
-closeBtn.addEventListener("click", closeModal);
-cancelBtn.addEventListener("click", closeModal);
-
-// Close when clicking outside
-modal.addEventListener("click", (event) => {
-    if (event.target === modal) {
-        closeModal();
-    }
-});
-
-// Create activity
-form.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const name = document.getElementById("activityName").value.trim();
-    const route = document.getElementById("routeName").value.trim();
-    const player = document.getElementById("playerTrain").value.trim();
-
-    if (!name || !route || !player) {
-        alert("Please fill all fields.");
-        return;
-    }
-
-    const row = document.createElement("tr");
-
-    const nameCell = document.createElement("td");
-    const activityName = document.createElement("div");
-    activityName.className = "activity-name";
-    activityName.textContent = name;
-
-    const activitySub = document.createElement("div");
-    activitySub.className = "activity-sub";
-    activitySub.textContent = player;
-
-    nameCell.append(activityName, activitySub);
-
-    const routeCell = document.createElement("td");
-    routeCell.textContent = route;
-
-    const playerCell = document.createElement("td");
-    playerCell.textContent = "1";
-
-    const aiCell = document.createElement("td");
-    aiCell.textContent = "00";
-
-    const statusCell = document.createElement("td");
-    const badge = document.createElement("span");
-    badge.className = "status-badge draft";
-    badge.textContent = "Draft";
-    statusCell.appendChild(badge);
-
-    const actionCell = document.createElement("td");
-
-    row.append(
-        nameCell,
-        routeCell,
-        playerCell,
-        aiCell,
-        statusCell,
-        actionCell
-    );
-
-    table.prepend(row);
-
-    activityCount++;
-
-    document.getElementById("totalActivities").textContent =
-        String(activityCount).padStart(2, "0");
-
-    closeModal();
-});
-
-// Initialize icons
-if (window.lucide) {
-    lucide.createIcons();
-}
+document.addEventListener("click",e=>{const nav=e.target.closest("[data-view]");if(nav){e.preventDefault();showView(nav.dataset.view)}const go=e.target.closest("[data-go]");if(go)showView(go.dataset.go);const edit=e.target.closest("[data-edit]");if(edit)editActivity(edit.dataset.edit);const del=e.target.closest("[data-delete]");if(del)deleteActivity(del.dataset.delete);const pdf=e.target.closest("[data-pdf]");if(pdf)downloadPdf(pdf.dataset.pdf);const removeSection=e.target.closest(".remove-section");if(removeSection){removeSection.closest(".section-card").remove();if(!document.querySelector(".section-card"))document.getElementById("sectionsContainer").innerHTML='<div class="no-sections">No sections added yet. Click “Add Section” to begin.</div>'}const removeEntry=e.target.closest(".remove-entry");if(removeEntry)removeEntry.closest("tr").remove();const addEntryBtn=e.target.closest(".add-entry-btn");if(addEntryBtn)addEntry(addEntryBtn.closest(".section-card"))});
+document.getElementById("newActivityBtn").addEventListener("click",openNew);document.getElementById("newActivityBtn2").addEventListener("click",openNew);document.getElementById("addSectionBtn").addEventListener("click",()=>addSection());document.getElementById("saveActivityBtn").addEventListener("click",saveBuilder);document.getElementById("cancelBuilder").addEventListener("click",()=>showView("activities"));document.getElementById("backToActivities").addEventListener("click",()=>showView("activities"));
+document.getElementById("sectionsContainer").innerHTML='<div class="no-sections">No sections added yet. Click “Add Section” to begin.</div>';
+renderLists();showView("dashboard");
