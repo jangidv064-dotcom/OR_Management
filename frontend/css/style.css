@@ -1059,3 +1059,271 @@ footer span {
 .download-path-file[hidden] {
     display: none;
 }
+
+
+/* ==========================================
+   ACCOUNT SETTINGS
+========================================== */
+
+.sidebar-bottom {
+    position: relative;
+}
+
+.settings-wrapper {
+    position: relative;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+}
+
+.settings-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px;
+
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+
+    color: var(--muted);
+    font-size: 12px;
+
+    transition: 0.2s ease;
+}
+
+.settings-button svg {
+    width: 19px;
+    height: 19px;
+}
+
+.settings-button:hover,
+.settings-button.active {
+    color: var(--cyan);
+    background: #06b6d41a;
+    border-color: #06b6d433;
+}
+
+
+/* SETTINGS DROPDOWN */
+
+.settings-menu {
+    position: absolute;
+    bottom: 58px;
+    left: 0;
+
+    width: 220px;
+
+    padding: 9px;
+
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    box-shadow: 0 12px 35px #00000080;
+
+    z-index: 100;
+}
+
+.settings-menu[hidden] {
+    display: none;
+}
+
+.settings-menu-heading {
+    padding: 9px 10px;
+
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+}
+
+.settings-menu-item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    padding: 11px 10px;
+
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+
+    color: var(--text);
+    font-size: 11px;
+    text-align: left;
+
+    transition: 0.2s ease;
+}
+
+.settings-menu-item svg {
+    width: 16px;
+    height: 16px;
+    color: var(--muted);
+}
+
+.settings-menu-item:hover {
+    background: #06b6d41a;
+    color: var(--cyan);
+}
+
+.settings-menu-item:hover svg {
+    color: var(--cyan);
+}
+
+.settings-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 6px 0;
+}
+
+.settings-menu-item.logout-option {
+    color: var(--red);
+}
+
+.settings-menu-item.logout-option svg {
+    color: var(--red);
+}
+
+.settings-menu-item.logout-option:hover {
+    background: #ff85851a;
+}
+
+
+/* USER NAME IN TOPBAR */
+
+.user-name-display {
+    color: var(--text);
+    font-size: 12px;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+
+/* ACCOUNT MODAL */
+
+.account-modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+
+    background: #000000b8;
+    backdrop-filter: blur(5px);
+
+    z-index: 1000;
+}
+
+.account-modal-overlay[hidden] {
+    display: none;
+}
+
+.account-modal {
+    width: 100%;
+    max-width: 420px;
+
+    padding: 26px;
+
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: 0 20px 60px #00000080;
+}
+
+.account-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 23px;
+}
+
+.account-modal-header h2 {
+    font-family: 'Space Grotesk';
+    font-size: 21px;
+    margin-top: 8px;
+}
+
+.account-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
+.account-modal form[hidden] {
+    display: none;
+}
+
+.account-modal .primary-button {
+    width: 100%;
+    margin-top: 4px;
+}
+
+.account-modal input {
+    background: #0c0c0f;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    outline: none;
+    font-size: 12px;
+    width: 100%;
+}
+
+.account-modal input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 2px #06b6d41a;
+}
+
+.account-message {
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    font-size: 11px;
+}
+
+.account-message.error {
+    color: var(--red);
+    background: #ff85851a;
+    border: 1px solid #ff858533;
+}
+
+.account-message.success {
+    color: var(--green);
+    background: #42c98b1a;
+    border: 1px solid #42c98b33;
+}
+
+
+/* MOBILE SETTINGS */
+
+@media (max-width: 760px) {
+
+    .settings-button {
+        justify-content: center;
+        padding: 12px 5px;
+    }
+
+    .settings-button span {
+        display: none;
+    }
+
+    .settings-menu {
+        left: 55px;
+        bottom: 0;
+    }
+
+    .user-name-display {
+        font-size: 10px;
+    }
+
+}
+

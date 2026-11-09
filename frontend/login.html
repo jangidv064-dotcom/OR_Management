@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Open Rails Act Manager</title>
+
+    <link rel="stylesheet" href="./css/login.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <main class="auth-container">
+
+        <section class="auth-brand">
+
+            <div class="brand-icon">
+                <i data-lucide="train-front"></i>
+            </div>
+
+            <h1>OPEN RAILS</h1>
+            <span>ACT MANAGER</span>
+
+        </section>
+
+        <section class="auth-card">
+
+            <div class="auth-heading">
+
+                <div class="eyebrow">
+                    YOUR PERSONAL WORKSPACE
+                </div>
+
+                <h2 id="formTitle">Welcome <span>Back.</span></h2>
+
+                <p id="formDescription">
+                    Login to access your saved Open Rails activities.
+                </p>
+
+            </div>
+
+
+            <div id="messageBox" class="message-box" hidden></div>
+
+
+            <!-- LOGIN FORM -->
+
+            <form id="loginForm">
+
+                <div class="form-field">
+
+                    <label for="loginEmail">Email Address</label>
+
+                    <div class="input-wrapper">
+                        <i data-lucide="mail"></i>
+
+                        <input
+                            type="email"
+                            id="loginEmail"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="loginPassword">Password</label>
+
+                    <div class="input-wrapper">
+                        <i data-lucide="lock"></i>
+
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <button type="submit" class="auth-button" id="loginButton">
+
+                    <span>Login to Workspace</span>
+
+                    <i data-lucide="arrow-right"></i>
+
+                </button>
+
+            </form>
+
+
+            <!-- SIGNUP FORM -->
+
+            <form id="signupForm" hidden>
+
+                <div class="form-field">
+
+                    <label for="signupName">Full Name</label>
+
+                    <div class="input-wrapper">
+                        <i data-lucide="user"></i>
+
+                        <input
+                            type="text"
+                            id="signupName"
+                            placeholder="Enter your name"
+                            maxlength="100"
+                            autocomplete="name"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="signupEmail">Email Address</label>
+
+                    <div class="input-wrapper">
+                        <i data-lucide="mail"></i>
+
+                        <input
+                            type="email"
+                            id="signupEmail"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="form-field">
+
+                    <label for="signupPassword">Password</label>
+
+                    <div class="input-wrapper">
+                        <i data-lucide="lock"></i>
+
+                        <input
+                            type="password"
+                            id="signupPassword"
+                            placeholder="Minimum 8 characters"
+                            minlength="8"
+                            autocomplete="new-password"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <button type="submit" class="auth-button" id="signupButton">
+
+                    <span>Create Account</span>
+
+                    <i data-lucide="arrow-right"></i>
+
+                </button>
+
+            </form>
+
+
+            <div class="auth-switch">
+
+                <span id="switchText">
+                    Don't have an account?
+                </span>
+
+                <button type="button" id="switchButton">
+                    Create Account
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <footer>
+            OPEN RAILS ACT MANAGER
+            <span>•</span>
+            PERSONAL WORKSPACE
+        </footer>
+
+    </main>
+
+
+    <script src="./js/auth.js"></script>
+
+</body>
+
+</html>

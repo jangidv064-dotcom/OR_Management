@@ -1,0 +1,374 @@
+
+:root {
+    --bg: #050505;
+    --panel: #121214;
+    --panel2: #1a1a1e;
+    --border: #292930;
+
+    --text: #ffffff;
+    --muted: #94a3b8;
+
+    --cyan: #06b6d4;
+    --blue: #3b82f6;
+
+    --red: #ff8585;
+    --green: #42c98b;
+}
+
+
+/* ==============================
+   GLOBAL STYLES
+============================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+
+/* ==============================
+   MAIN CONTAINER
+============================== */
+
+.auth-container {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 30px 20px;
+}
+
+
+/* ==============================
+   BRAND
+============================== */
+
+.auth-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin-bottom: 30px;
+}
+
+.brand-icon {
+    width: 55px;
+    height: 55px;
+
+    display: grid;
+    place-items: center;
+
+    background: #06b6d41f;
+    color: var(--cyan);
+
+    border: 1px solid #06b6d433;
+    border-radius: 14px;
+
+    margin-bottom: 13px;
+}
+
+.brand-icon svg {
+    width: 27px;
+    height: 27px;
+}
+
+.auth-brand h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    letter-spacing: 2px;
+}
+
+.auth-brand span {
+    color: var(--cyan);
+    font-size: 9px;
+    letter-spacing: 3px;
+    margin-top: 3px;
+}
+
+
+/* ==============================
+   AUTH CARD
+============================== */
+
+.auth-card {
+    width: 100%;
+    max-width: 430px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    padding: 34px;
+
+    box-shadow: 0 20px 60px #00000066;
+}
+
+.auth-heading {
+    margin-bottom: 27px;
+}
+
+.eyebrow {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.auth-heading h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 29px;
+    margin: 12px 0 8px;
+}
+
+.auth-heading h2 span {
+    color: var(--cyan);
+}
+
+.auth-heading p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+/* ==============================
+   FORM FIELDS
+============================== */
+
+#loginForm,
+#signupForm {
+    display: flex;
+    flex-direction: column;
+    gap: 19px;
+}
+
+#loginForm[hidden],
+#signupForm[hidden] {
+    display: none;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-field label {
+    color: #bdc9d6;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper svg {
+    position: absolute;
+    left: 13px;
+
+    width: 17px;
+    height: 17px;
+
+    color: var(--muted);
+    pointer-events: none;
+}
+
+.input-wrapper input {
+    width: 100%;
+    height: 46px;
+
+    padding: 0 13px 0 42px;
+
+    background: #0c0c0f;
+    color: var(--text);
+
+    border: 1px solid var(--border);
+    border-radius: 7px;
+
+    outline: none;
+    font-size: 12px;
+
+    transition: 0.2s ease;
+}
+
+.input-wrapper input::placeholder {
+    color: #64748b;
+}
+
+.input-wrapper input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px #06b6d41a;
+}
+
+
+/* ==============================
+   AUTH BUTTON
+============================== */
+
+.auth-button {
+    width: 100%;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    margin-top: 5px;
+
+    background: var(--cyan);
+    color: #050505;
+
+    border: 1px solid var(--cyan);
+    border-radius: 7px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    transition: 0.2s ease;
+}
+
+.auth-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.auth-button:hover {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #ffffff;
+
+    box-shadow: 0 0 15px #3b82f64d;
+}
+
+.auth-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* ==============================
+   LOGIN / SIGNUP SWITCH
+============================== */
+
+.auth-switch {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    margin-top: 25px;
+
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.auth-switch button {
+    background: transparent;
+    border: none;
+
+    color: var(--cyan);
+    font-size: 11px;
+    font-weight: 700;
+
+    transition: 0.2s ease;
+}
+
+.auth-switch button:hover {
+    color: var(--blue);
+}
+
+
+/* ==============================
+   MESSAGE BOX
+============================== */
+
+.message-box {
+    padding: 11px 13px;
+    margin-bottom: 18px;
+
+    border-radius: 7px;
+
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.message-box.error {
+    color: var(--red);
+    background: #ff85851a;
+    border: 1px solid #ff858533;
+}
+
+.message-box.success {
+    color: var(--green);
+    background: #42c98b1a;
+    border: 1px solid #42c98b33;
+}
+
+
+/* ==============================
+   FOOTER
+============================== */
+
+footer {
+    margin-top: 30px;
+
+    color: #64748b;
+    font-size: 9px;
+    letter-spacing: 1.2px;
+
+    text-align: center;
+}
+
+footer span {
+    color: var(--cyan);
+    padding: 0 5px;
+}
+
+
+/* ==============================
+   RESPONSIVE DESIGN
+============================== */
+
+@media (max-width: 480px) {
+
+    .auth-container {
+        padding: 20px 15px;
+    }
+
+    .auth-card {
+        padding: 25px 20px;
+    }
+
+    .auth-heading h2 {
+        font-size: 25px;
+    }
+
+    .auth-switch {
+        flex-wrap: wrap;
+    }
+}

@@ -1,95 +1,958 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Open Rails Act Manager</title>
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Open Rails Act Manager</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="brand"><div class="brand-icon"><i data-lucide="train-front"></i></div><div><h2>OPEN RAILS</h2><span>ACT MANAGER</span></div></div>
-    <div class="nav-label">WORKSPACE</div>
-    <nav class="navigation">
-      <a href="#" class="nav-link active" data-view="dashboard"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
-      <a href="#" class="nav-link" data-view="activities"><i data-lucide="folder-open"></i><span>My Activities</span></a>
-      <a href="#" class="nav-link" data-view="builder"><i data-lucide="clipboard-list"></i><span>Activity Builder</span></a>
-    </nav>
-    <div class="sidebar-bottom"><div class="user-profile"><div class="brand-icon"><i data-lucide="database"></i></div><div class="user-details"><strong>Personal Workspace</strong><span>Local installation</span></div></div></div>
-  </aside>
 
-  <main class="main-content">
-    <header class="topbar">
-      <div><div class="breadcrumb">WORKSPACE / <span id="breadcrumbLabel">DASHBOARD</span></div><h1 id="pageTitle">Dashboard</h1></div>
-      <div class="topbar-right"><div class="system-status"><span class="status-dot"></span> FRONTEND PREVIEW</div></div>
-    </header>
+    <div class="app">
 
-    <section class="view active" id="dashboardView">
-      <section class="welcome-section">
-        <div><div class="eyebrow">ACTIVITY CONTROL CENTRE</div><h2>Open Rails <span>Workspace.</span></h2><p>Create, organise and print your Open Rails activity records.</p></div>
-        <button class="primary-button" id="newActivityBtn"><i data-lucide="plus"></i> Create New Activity</button>
-      </section>
-      <section class="stats-grid">
-        <div class="stat-card"><div class="stat-top"><span>TOTAL ACTIVITIES</span><i data-lucide="folder-open"></i></div><div class="stat-value" id="totalActivities">00</div><div class="stat-description">Saved in this browser</div></div>
-        <div class="stat-card"><div class="stat-top"><span>TOTAL SECTIONS</span><i data-lucide="map"></i></div><div class="stat-value" id="totalSections">00</div><div class="stat-description">Across all activities</div></div>
-        <div class="stat-card"><div class="stat-top"><span>TRAIN ENTRIES</span><i data-lucide="train-front"></i></div><div class="stat-value" id="totalEntries">00</div><div class="stat-description">Across all activities</div></div>
-      </section>
-      <section class="activities-section">
-        <div class="section-heading"><div><div class="eyebrow">YOUR WORKSPACE</div><h2>Recent Activities</h2></div><button class="text-button" data-go="activities">View all <i data-lucide="arrow-right"></i></button></div>
-        <div id="recentActivities" class="activity-cards"></div>
-      </section>
-    </section>
+        <!-- ==================================
+             SIDEBAR
+        =================================== -->
 
-    <section class="view" id="activitiesView">
-      <section class="page-intro"><div><div class="eyebrow">YOUR WORKSPACE</div><h2>My Activities</h2><p>All activity records you have created.</p></div><button class="primary-button" id="newActivityBtn2"><i data-lucide="plus"></i> Create Activity</button></section>
-      <div id="allActivities" class="activity-cards"></div>
-    </section>
+        <aside class="sidebar">
 
-    <section class="view" id="builderView">
-      <div id="printHeading"></div>
-      <section class="page-intro"><div><div class="eyebrow">ACTIVITY EDITOR</div><h2 id="builderHeading">Create Activity</h2><p>Add sections and train entries in the same structure as your activity notes.</p></div><button class="secondary-button" id="backToActivities"><i data-lucide="arrow-left"></i> Back</button></section>
-      <div class="builder-layout">
-        <section class="panel activity-details">
-          <div class="panel-heading"><i data-lucide="file-text"></i><div><h3>Activity Details</h3><p>Basic information about this activity</p></div></div>
-          <div class="form-grid">
-            <div class="field"><label for="activityName">Activity Name *</label><input id="activityName" maxlength="150" placeholder="e.g. 12218 Kerala Sampark Kranti Express" required></div>
-            <div class="field"><label for="routeName">Route Name</label><input id="routeName" maxlength="150" placeholder="e.g. Mumbai Central - Vadodara"></div>
-            <div class="field"><label for="activityDay">Day</label><select id="activityDay"><option value="">Select day</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select></div>
-          </div>
-        </section>
-        <section class="sections-area">
-          <div class="section-heading"><div><div class="eyebrow">ACTIVITY STRUCTURE</div><h2>Sections & Train Entries</h2></div><button class="primary-button" id="addSectionBtn"><i data-lucide="plus"></i> Add Section</button></div>
-          <div id="sectionsContainer" class="sections-container"></div>
-          <div class="builder-footer"><span id="builderMessage">Changes are saved in this browser when you click Save Activity.</span><div class="builder-actions"><button class="secondary-button" id="cancelBuilder">Cancel</button><button class="primary-button" id="saveActivityBtn"><i data-lucide="save"></i> Save Activity</button></div></div>
-        </section>
-      </div>
-    </section>
-    <footer>OPEN RAILS ACT MANAGER <span>•</span> PERSONAL WORKSPACE</footer>
-  </main>
-</div>
+            <!-- BRAND -->
 
-<template id="sectionTemplate">
-  <article class="section-card">
-    <div class="section-card-head"><div class="section-title-wrap"><span class="section-index"></span><input class="section-name" placeholder="Section name (e.g. Pre Vadodara)" maxlength="120"></div><button class="icon-action remove-section" title="Remove section"><i data-lucide="trash-2"></i></button></div>
-    <div class="entry-table-wrap"><table class="entry-table"><thead><tr><th>TRAIN NO. & NAME</th><th>TIME / LOCATION</th><th>HALT / INFORMATION</th><th>CONSIST NAME</th><th>PATH FILE (.PAT)</th><th></th></tr></thead><tbody class="entries-body"></tbody></table></div>
-    <button class="add-entry-btn"><i data-lucide="plus"></i> Add Train Entry</button>
-  </article>
-</template>
-<template id="entryTemplate">
-  <tr class="entry-row">
-    <td><input class="entry-train" placeholder="12955 GANGAUR EXPRESS"></td>
-    <td><input class="entry-time" placeholder="00:50:00 / BRC PF-1"></td>
-    <td><input class="entry-info" placeholder="BH, AKV, OT BY PLAYER"></td>
-    <td><input class="entry-consist" placeholder="12955 GANGAUR EXPRESS"></td>
-    <td class="path-file-cell"><label class="path-file-label">Choose .pat<input class="entry-path-file" type="file" accept=".pat"></label><span class="path-file-name">No path selected</span><button type="button" class="path-download-button" hidden>Download saved path</button></td>
-    <td><button class="icon-action remove-entry" title="Remove entry"><i data-lucide="x"></i></button></td>
-  </tr>
-</template>
-<script src="./js/script.js"></script>
+            <div class="brand">
+
+                <div class="brand-icon">
+                    <i data-lucide="train-front"></i>
+                </div>
+
+                <div>
+                    <h2>OPEN RAILS</h2>
+                    <span>ACT MANAGER</span>
+                </div>
+
+            </div>
+
+
+            <!-- NAVIGATION -->
+
+            <div class="nav-label">
+                WORKSPACE
+            </div>
+
+            <nav class="navigation">
+
+                <a href="#" class="nav-link active" data-view="dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="#" class="nav-link" data-view="activities">
+                    <i data-lucide="folder-open"></i>
+                    <span>My Activities</span>
+                </a>
+
+                <a href="#" class="nav-link" data-view="builder">
+                    <i data-lucide="clipboard-list"></i>
+                    <span>Activity Builder</span>
+                </a>
+
+            </nav>
+
+
+            <!-- SETTINGS -->
+
+            <div class="sidebar-bottom">
+
+                <div class="settings-wrapper">
+
+                    <button
+                        type="button"
+                        class="settings-button"
+                        id="settingsButton"
+                    >
+                        <i data-lucide="settings"></i>
+                        <span>Settings</span>
+                    </button>
+
+
+                    <!-- SETTINGS DROPDOWN -->
+
+                    <div
+                        class="settings-menu"
+                        id="settingsMenu"
+                        hidden
+                    >
+
+                        <div class="settings-menu-heading">
+                            ACCOUNT SETTINGS
+                        </div>
+
+                        <button
+                            type="button"
+                            class="settings-menu-item"
+                            id="changeNameOption"
+                        >
+                            <i data-lucide="user-round-pen"></i>
+                            Change Name
+                        </button>
+
+                        <button
+                            type="button"
+                            class="settings-menu-item"
+                            id="changePasswordOption"
+                        >
+                            <i data-lucide="key-round"></i>
+                            Change Password
+                        </button>
+
+                        <div class="settings-divider"></div>
+
+                        <button
+                            type="button"
+                            class="settings-menu-item logout-option"
+                            id="logoutButton"
+                        >
+                            <i data-lucide="log-out"></i>
+                            Logout
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- ==================================
+             MAIN CONTENT
+        =================================== -->
+
+        <main class="main-content">
+
+
+            <!-- TOPBAR -->
+
+            <header class="topbar">
+
+                <div>
+
+                    <div class="breadcrumb">
+                        WORKSPACE /
+                        <span id="breadcrumbLabel">DASHBOARD</span>
+                    </div>
+
+                    <h1 id="pageTitle">
+                        Dashboard
+                    </h1>
+
+                </div>
+
+
+                <!-- LOGGED-IN USER NAME -->
+
+                <div class="topbar-right">
+
+                    <div class="system-status user-name-display">
+
+                        <span class="status-dot"></span>
+
+                        <span id="headerUserName">
+                            Loading...
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- ==================================
+                 DASHBOARD VIEW
+            =================================== -->
+
+            <section class="view active" id="dashboardView">
+
+                <!-- WELCOME SECTION -->
+
+                <section class="welcome-section">
+
+                    <div>
+
+                        <div class="eyebrow">
+                            ACTIVITY CONTROL CENTRE
+                        </div>
+
+                        <h2>
+                            Open Rails
+                            <span>Workspace.</span>
+                        </h2>
+
+                        <p>
+                            Create, organise and print your Open Rails activity records.
+                        </p>
+
+                    </div>
+
+                    <button class="primary-button" id="newActivityBtn">
+
+                        <i data-lucide="plus"></i>
+
+                        Create New Activity
+
+                    </button>
+
+                </section>
+
+
+                <!-- STATISTICS -->
+
+                <section class="stats-grid">
+
+                    <div class="stat-card">
+
+                        <div class="stat-top">
+
+                            <span>TOTAL ACTIVITIES</span>
+
+                            <i data-lucide="folder-open"></i>
+
+                        </div>
+
+                        <div class="stat-value" id="totalActivities">
+                            00
+                        </div>
+
+                        <div class="stat-description">
+                            Saved in your account
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-top">
+
+                            <span>TOTAL SECTIONS</span>
+
+                            <i data-lucide="map"></i>
+
+                        </div>
+
+                        <div class="stat-value" id="totalSections">
+                            00
+                        </div>
+
+                        <div class="stat-description">
+                            Across all activities
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-top">
+
+                            <span>TRAIN ENTRIES</span>
+
+                            <i data-lucide="train-front"></i>
+
+                        </div>
+
+                        <div class="stat-value" id="totalEntries">
+                            00
+                        </div>
+
+                        <div class="stat-description">
+                            Across all activities
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- RECENT ACTIVITIES -->
+
+                <section class="activities-section">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <div class="eyebrow">
+                                YOUR WORKSPACE
+                            </div>
+
+                            <h2>
+                                Recent Activities
+                            </h2>
+
+                        </div>
+
+                        <button
+                            class="text-button"
+                            data-go="activities"
+                        >
+                            View all
+                            <i data-lucide="arrow-right"></i>
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="recentActivities"
+                        class="activity-cards"
+                    ></div>
+
+                </section>
+
+            </section>
+
+
+            <!-- ==================================
+                 MY ACTIVITIES VIEW
+            =================================== -->
+
+            <section class="view" id="activitiesView">
+
+                <section class="page-intro">
+
+                    <div>
+
+                        <div class="eyebrow">
+                            YOUR WORKSPACE
+                        </div>
+
+                        <h2>
+                            My Activities
+                        </h2>
+
+                        <p>
+                            All activity records you have created.
+                        </p>
+
+                    </div>
+
+                    <button
+                        class="primary-button"
+                        id="newActivityBtn2"
+                    >
+                        <i data-lucide="plus"></i>
+                        Create Activity
+                    </button>
+
+                </section>
+
+
+                <div
+                    id="allActivities"
+                    class="activity-cards"
+                ></div>
+
+            </section>
+
+
+            <!-- ==================================
+                 ACTIVITY BUILDER VIEW
+            =================================== -->
+
+            <section class="view" id="builderView">
+
+                <!-- PDF HEADING -->
+
+                <div id="printHeading"></div>
+
+
+                <!-- PAGE INTRO -->
+
+                <section class="page-intro">
+
+                    <div>
+
+                        <div class="eyebrow">
+                            ACTIVITY EDITOR
+                        </div>
+
+                        <h2 id="builderHeading">
+                            Create Activity
+                        </h2>
+
+                        <p>
+                            Add sections and train entries in the same structure as your activity notes.
+                        </p>
+
+                    </div>
+
+                    <button
+                        class="secondary-button"
+                        id="backToActivities"
+                    >
+                        <i data-lucide="arrow-left"></i>
+                        Back
+                    </button>
+
+                </section>
+
+
+                <div class="builder-layout">
+
+
+                    <!-- ACTIVITY DETAILS -->
+
+                    <section class="panel activity-details">
+
+                        <div class="panel-heading">
+
+                            <i data-lucide="file-text"></i>
+
+                            <div>
+
+                                <h3>
+                                    Activity Details
+                                </h3>
+
+                                <p>
+                                    Basic information about this activity
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <div class="field">
+
+                                <label for="activityName">
+                                    Activity Name *
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="activityName"
+                                    maxlength="150"
+                                    placeholder="e.g. 12218 Kerala Sampark Kranti Express"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label for="routeName">
+                                    Route Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="routeName"
+                                    maxlength="150"
+                                    placeholder="e.g. Mumbai Central - Vadodara"
+                                >
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label for="activityDay">
+                                    Day
+                                </label>
+
+                                <select id="activityDay">
+
+                                    <option value="">
+                                        Select day
+                                    </option>
+
+                                    <option>Monday</option>
+                                    <option>Tuesday</option>
+                                    <option>Wednesday</option>
+                                    <option>Thursday</option>
+                                    <option>Friday</option>
+                                    <option>Saturday</option>
+                                    <option>Sunday</option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- SECTIONS AREA -->
+
+                    <section class="sections-area">
+
+                        <div class="section-heading">
+
+                            <div>
+
+                                <div class="eyebrow">
+                                    ACTIVITY STRUCTURE
+                                </div>
+
+                                <h2>
+                                    Sections & Train Entries
+                                </h2>
+
+                            </div>
+
+                            <button
+                                class="primary-button"
+                                id="addSectionBtn"
+                            >
+                                <i data-lucide="plus"></i>
+                                Add Section
+                            </button>
+
+                        </div>
+
+
+                        <!-- DYNAMIC SECTIONS -->
+
+                        <div
+                            id="sectionsContainer"
+                            class="sections-container"
+                        ></div>
+
+
+                        <!-- BUILDER FOOTER -->
+
+                        <div class="builder-footer">
+
+                            <span id="builderMessage">
+                                Changes are saved to your account when you click Save Activity.
+                            </span>
+
+                            <div class="builder-actions">
+
+                                <button
+                                    class="secondary-button"
+                                    id="cancelBuilder"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    class="primary-button"
+                                    id="saveActivityBtn"
+                                >
+                                    <i data-lucide="save"></i>
+                                    Save Activity
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================================
+                 FOOTER
+            =================================== -->
+
+            <footer>
+                OPEN RAILS ACT MANAGER
+                <span>•</span>
+                PERSONAL WORKSPACE
+            </footer>
+
+        </main>
+
+    </div>
+
+
+    <!-- ==================================
+         ACCOUNT SETTINGS MODAL
+    =================================== -->
+
+    <div
+        class="account-modal-overlay"
+        id="accountModal"
+        hidden
+    >
+
+        <div class="account-modal">
+
+
+            <!-- MODAL HEADER -->
+
+            <div class="account-modal-header">
+
+                <div>
+
+                    <div class="eyebrow">
+                        ACCOUNT SETTINGS
+                    </div>
+
+                    <h2 id="accountModalTitle">
+                        Change Name
+                    </h2>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="icon-action"
+                    id="closeAccountModal"
+                    title="Close"
+                >
+                    <i data-lucide="x"></i>
+                </button>
+
+            </div>
+
+
+            <!-- STATUS MESSAGE -->
+
+            <div
+                id="accountMessage"
+                class="account-message"
+                hidden
+            ></div>
+
+
+            <!-- ==================================
+                 CHANGE NAME FORM
+            =================================== -->
+
+            <form id="changeNameForm">
+
+                <div class="field">
+
+                    <label for="newUserName">
+                        New Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="newUserName"
+                        maxlength="100"
+                        placeholder="Enter your new name"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                >
+                    Save Name
+                </button>
+
+            </form>
+
+
+            <!-- ==================================
+                 CHANGE PASSWORD FORM
+            =================================== -->
+
+            <form id="changePasswordForm" hidden>
+
+                <div class="field">
+
+                    <label for="currentPassword">
+                        Current Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="currentPassword"
+                        placeholder="Enter current password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="newPassword">
+                        New Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="newPassword"
+                        minlength="8"
+                        placeholder="Minimum 8 characters"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="confirmPassword">
+                        Confirm New Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        minlength="8"
+                        placeholder="Re-enter new password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                >
+                    Update Password
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================
+         SECTION TEMPLATE
+    =================================== -->
+
+    <template id="sectionTemplate">
+
+        <article class="section-card">
+
+
+            <!-- SECTION HEADER -->
+
+            <div class="section-card-head">
+
+                <div class="section-title-wrap">
+
+                    <span class="section-index"></span>
+
+                    <input
+                        type="text"
+                        class="section-name"
+                        placeholder="Section name (e.g. Pre Vadodara)"
+                        maxlength="120"
+                    >
+
+                </div>
+
+
+                <button
+                    class="icon-action remove-section"
+                    title="Remove section"
+                >
+                    <i data-lucide="trash-2"></i>
+                </button>
+
+            </div>
+
+
+            <!-- TRAIN ENTRY TABLE -->
+
+            <div class="entry-table-wrap">
+
+                <table class="entry-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>TRAIN NO. & NAME</th>
+
+                            <th>TIME / LOCATION</th>
+
+                            <th>HALT / INFORMATION</th>
+
+                            <th>CONSIST NAME</th>
+
+                            <th>PATH FILE (.PAT)</th>
+
+                            <th></th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody class="entries-body"></tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- ADD TRAIN ENTRY -->
+
+            <button class="add-entry-btn">
+
+                <i data-lucide="plus"></i>
+
+                Add Train Entry
+
+            </button>
+
+        </article>
+
+    </template>
+
+
+    <!-- ==================================
+         TRAIN ENTRY TEMPLATE
+    =================================== -->
+
+    <template id="entryTemplate">
+
+        <tr class="entry-row">
+
+
+            <!-- TRAIN NAME -->
+
+            <td>
+
+                <input
+                    type="text"
+                    class="entry-train"
+                    placeholder="12955 GANGAUR EXPRESS"
+                >
+
+            </td>
+
+
+            <!-- TIME / LOCATION -->
+
+            <td>
+
+                <input
+                    type="text"
+                    class="entry-time"
+                    placeholder="00:50:00 / BRC PF-1"
+                >
+
+            </td>
+
+
+            <!-- HALT / INFORMATION -->
+
+            <td>
+
+                <input
+                    type="text"
+                    class="entry-info"
+                    placeholder="BH, AKV, OT BY PLAYER"
+                >
+
+            </td>
+
+
+            <!-- CONSIST NAME -->
+
+            <td>
+
+                <input
+                    type="text"
+                    class="entry-consist"
+                    placeholder="12955 GANGAUR EXPRESS"
+                >
+
+            </td>
+
+
+            <!-- OPTIONAL PAT FILE -->
+
+            <td class="path-file-cell">
+
+                <label class="path-file-label">
+
+                    Choose .pat
+
+                    <input
+                        type="file"
+                        class="entry-path-file"
+                        accept=".pat"
+                    >
+
+                </label>
+
+
+                <span class="path-file-name">
+                    No path selected
+                </span>
+
+
+                <button
+                    type="button"
+                    class="path-download-button"
+                    hidden
+                >
+                    Download saved path
+                </button>
+
+            </td>
+
+
+            <!-- REMOVE ENTRY -->
+
+            <td>
+
+                <button
+                    class="icon-action remove-entry"
+                    title="Remove entry"
+                >
+                    <i data-lucide="x"></i>
+                </button>
+
+            </td>
+
+        </tr>
+
+    </template>
+
+
+    <!-- ==================================
+         JAVASCRIPT
+    =================================== -->
+
+    <script src="./js/script.js"></script>
+
 </body>
+
 </html>

@@ -69,6 +69,313 @@ function refreshIcons() {
 
 
 // ==========================================
+// USER ACCOUNT & SETTINGS
+// ==========================================
+
+async function initializeDashboard() {
+
+    try {
+
+        const data = await apiRequest("/api/auth/me");
+
+        currentUser = data.user;
+
+        document.getElementById("headerUserName").textContent =
+            currentUser.name;
+
+        // Load only this user's activities after authentication.
+        await loadActivities();
+
+    } catch (error) {
+
+        window.location.replace("/login");
+
+    }
+}
+
+
+// SETTINGS MENU
+
+const settingsButton = document.getElementById("settingsButton");
+const settingsMenu = document.getElementById("settingsMenu");
+
+settingsButton.addEventListener("click", () => {
+
+    settingsMenu.hidden = !settingsMenu.hidden;
+
+    settingsButton.classList.toggle(
+        "active",
+        !settingsMenu.hidden
+    );
+
+});
+
+
+// CLOSE SETTINGS WHEN CLICKING OUTSIDE
+
+document.addEventListener("click", event => {
+
+    if (
+        !event.target.closest(".settings-wrapper")
+    ) {
+
+        settingsMenu.hidden = true;
+        settingsButton.classList.remove("active");
+
+    }
+
+});
+
+
+// ACCOUNT MODAL
+
+const accountModal = document.getElementById("accountModal");
+
+const changeNameForm = document.getElementById("changeNameForm");
+const changePasswordForm = document.getElementById("changePasswordForm");
+
+const accountModalTitle = document.getElementById("accountModalTitle");
+const accountMessage = document.getElementById("accountMessage");
+
+
+function openAccountModal(mode) {
+
+    settingsMenu.hidden = true;
+    settingsButton.classList.remove("active");
+
+    accountModal.hidden = false;
+    accountMessage.hidden = true;
+
+    changeNameForm.hidden = mode !== "name";
+    changePasswordForm.hidden = mode !== "password";
+
+    if (mode === "name") {
+
+        accountModalTitle.textContent = "Change Name";
+
+        document.getElementById("newUserName").value =
+            currentUser.name;
+
+    } else {
+
+        accountModalTitle.textContent = "Change Password";
+
+        changePasswordForm.reset();
+
+    }
+
+    refreshIcons();
+
+}
+
+
+function closeAccountModal() {
+
+    accountModal.hidden = true;
+
+    changeNameForm.reset();
+    changePasswordForm.reset();
+
+    accountMessage.hidden = true;
+
+}
+
+
+function showAccountMessage(message, type = "error") {
+
+    accountMessage.textContent = message;
+    accountMessage.className = `account-message ${type}`;
+    accountMessage.hidden = false;
+
+}
+
+
+// OPEN NAME FORM
+
+document.getElementById("changeNameOption").addEventListener(
+    "click",
+    () => openAccountModal("name")
+);
+
+
+// OPEN PASSWORD FORM
+
+document.getElementById("changePasswordOption").addEventListener(
+    "click",
+    () => openAccountModal("password")
+);
+
+
+// CLOSE MODAL
+
+document.getElementById("closeAccountModal").addEventListener(
+    "click",
+    closeAccountModal
+);
+
+accountModal.addEventListener("click", event => {
+
+    if (event.target === accountModal) {
+        closeAccountModal();
+    }
+
+});
+
+
+// ==========================================
+// CHANGE NAME
+// ==========================================
+
+changeNameForm.addEventListener("submit", async event => {
+
+    event.preventDefault();
+
+    const newName = document.getElementById("newUserName")
+        .value.trim();
+
+    if (!newName) {
+
+        showAccountMessage("Please enter your name.");
+        return;
+
+    }
+
+    try {
+
+        const data = await apiRequest("/api/auth/change-name", {
+
+            method: "PUT",
+
+            body: JSON.stringify({
+                name: newName
+            })
+
+        });
+
+        currentUser = data.user;
+
+        document.getElementById("headerUserName").textContent =
+            currentUser.name;
+
+        showAccountMessage(
+            "Your name has been updated successfully.",
+            "success"
+        );
+
+    } catch (error) {
+
+        showAccountMessage(error.message);
+
+    }
+
+});
+
+
+// ==========================================
+// CHANGE PASSWORD
+// ==========================================
+
+changePasswordForm.addEventListener("submit", async event => {
+
+    event.preventDefault();
+
+    const currentPassword =
+        document.getElementById("currentPassword").value;
+
+    const newPassword =
+        document.getElementById("newPassword").value;
+
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+
+    if (newPassword.length < 8) {
+
+        showAccountMessage(
+            "New password must contain at least 8 characters."
+        );
+
+        return;
+
+    }
+
+
+    if (newPassword !== confirmPassword) {
+
+        showAccountMessage(
+            "New password and confirmation do not match."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        await apiRequest("/api/auth/change-password", {
+
+            method: "PUT",
+
+            body: JSON.stringify({
+                current_password: currentPassword,
+                new_password: newPassword
+            })
+
+        });
+
+        changePasswordForm.reset();
+
+        showAccountMessage(
+            "Your password has been changed successfully.",
+            "success"
+        );
+
+    } catch (error) {
+
+        showAccountMessage(error.message);
+
+    }
+
+});
+
+
+// ==========================================
+// LOGOUT
+// ==========================================
+
+document.getElementById("logoutButton").addEventListener(
+    "click",
+    async () => {
+
+        const confirmed = confirm(
+            "Are you sure you want to logout?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+
+            await apiRequest("/api/auth/logout", {
+                method: "POST"
+            });
+
+            window.location.replace("/login");
+
+        } catch (error) {
+
+            alert("Could not logout: " + error.message);
+
+        }
+
+    }
+);
+
+
+
+// ==========================================
 // NAVIGATION
 // ==========================================
 
@@ -730,4 +1037,6 @@ document.getElementById("sectionsContainer").innerHTML =
 
 showView("dashboard");
 
-loadActivities();
+initializeDashboard();
+
+let currentUser = null;
