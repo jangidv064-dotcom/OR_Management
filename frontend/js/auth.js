@@ -200,7 +200,7 @@ signupForm.addEventListener("submit", async event => {
     signupButton.disabled = true;
 
     signupButton.querySelector("span").textContent =
-        "Creating account...";
+        "Submitting request...";
 
     try {
 
@@ -216,12 +216,12 @@ signupForm.addEventListener("submit", async event => {
 
         });
 
+        signupForm.reset();
+
         showMessage(
-            "Account created successfully. Opening your workspace...",
+            "Registration request submitted successfully! Your account is pending admin approval. You can log in after approval.",
             "success"
         );
-
-        window.location.href = "/";
 
     } catch (error) {
 

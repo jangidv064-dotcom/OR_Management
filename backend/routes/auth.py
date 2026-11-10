@@ -1,3 +1,4 @@
+
 from flask import (
     Blueprint,
     request,
@@ -10,7 +11,7 @@ from werkzeug.security import (
     check_password_hash
 )
 
-from models import db, User, Activity
+from models import db, User
 
 
 auth_bp = Blueprint(
@@ -25,9 +26,15 @@ def user_to_dict(user):
     return {
         "id": user.id,
         "name": user.name,
-        "email": user.email
+        "email": user.email,
+        "is_admin": bool(user.is_admin),
+        "approval_status": user.approval_status
     }
 
+
+# ==========================================
+# REGISTER
+# ==========================================
 
 @auth_bp.route("/register", methods=["POST"])
 def register():
@@ -68,46 +75,37 @@ def register():
         }), 409
 
     try:
-        is_first_user = User.query.count() == 0
 
         user = User(
             name=name,
             email=email,
-            password_hash=generate_password_hash(password)
+            password_hash=generate_password_hash(password),
+            is_admin=False,
+            approval_status="pending"
         )
 
         db.session.add(user)
-        db.session.flush()
-
-        # Assign existing unclaimed activities to the first account.
-        if is_first_user:
-            Activity.query.filter(
-                Activity.user_id.is_(None)
-            ).update(
-                {
-                    Activity.user_id: user.id
-                },
-                synchronize_session=False
-            )
-
         db.session.commit()
 
-        session.clear()
-        session["user_id"] = user.id
-        session.permanent = True
-
         return jsonify({
-            "message": "Account created successfully.",
-            "user": user_to_dict(user)
+            "message": (
+                "Registration request submitted successfully. "
+                "Please wait for admin approval."
+            )
         }), 201
 
     except Exception:
+
         db.session.rollback()
 
         return jsonify({
             "error": "Could not create your account."
         }), 500
 
+
+# ==========================================
+# LOGIN
+# ==========================================
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
@@ -134,7 +132,31 @@ def login():
             "error": "Incorrect email or password."
         }), 401
 
+    status = (user.approval_status or "").lower()
+
+    if status == "pending":
+        return jsonify({
+            "error": (
+                "Your account is awaiting admin approval. "
+                "Please try again later."
+            )
+        }), 403
+
+    if status == "rejected":
+        return jsonify({
+            "error": (
+                "Your registration request was rejected. "
+                "Please contact the administrator."
+            )
+        }), 403
+
+    if status != "approved":
+        return jsonify({
+            "error": "Your account is not approved."
+        }), 403
+
     session.clear()
+
     session["user_id"] = user.id
     session.permanent = True
 
@@ -143,6 +165,10 @@ def login():
         "user": user_to_dict(user)
     })
 
+
+# ==========================================
+# CURRENT USER
+# ==========================================
 
 @auth_bp.route("/me", methods=["GET"])
 def current_user():
@@ -163,10 +189,21 @@ def current_user():
             "error": "Account not found."
         }), 401
 
+    if user.approval_status != "approved":
+        session.clear()
+
+        return jsonify({
+            "error": "Your account is not approved."
+        }), 403
+
     return jsonify({
         "user": user_to_dict(user)
     })
 
+
+# ==========================================
+# LOGOUT
+# ==========================================
 
 @auth_bp.route("/logout", methods=["POST"])
 def logout():

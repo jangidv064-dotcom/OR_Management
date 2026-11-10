@@ -1,4 +1,5 @@
 import os
+from routes.admin import admin_bp
 
 from flask import (
     Flask,
@@ -46,6 +47,7 @@ def create_app():
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(activities_bp)
+    app.register_blueprint(admin_bp)
 
     @app.route("/")
     def home():
