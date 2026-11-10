@@ -1327,3 +1327,277 @@ footer span {
 
 }
 
+
+/* ==========================================
+   ADMIN PANEL
+========================================== */
+
+.admin-stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.admin-requests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-request-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: 0.2s ease;
+}
+
+.admin-request-card:hover {
+    border-color: #06b6d44d;
+}
+
+.admin-request-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 9px;
+    background: #06b6d41a;
+    color: var(--cyan);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+}
+
+.admin-request-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-request-details h3 {
+    font-size: 14px;
+    margin-bottom: 5px;
+    overflow-wrap: anywhere;
+}
+
+.admin-request-details p {
+    color: var(--muted);
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
+
+.admin-request-status {
+    display: inline-block;
+    margin-top: 9px;
+    padding: 5px 8px;
+    border-radius: 5px;
+    background: #f59e0b18;
+    color: #fbbf24;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+}
+
+.admin-request-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.admin-request-actions button {
+    white-space: nowrap;
+}
+
+.admin-request-actions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.admin-approve-button {
+    background: var(--cyan);
+}
+
+.admin-reject-button:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.admin-message {
+    padding: 13px 15px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.admin-message.success {
+    color: var(--green);
+    background: #42c98b12;
+    border-color: #42c98b40;
+}
+
+.admin-message.error {
+    color: var(--red);
+    background: #ff858512;
+    border-color: #ff858540;
+}
+
+@media (max-width: 700px) {
+
+    .admin-request-card {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .admin-request-details {
+        flex-basis: calc(100% - 65px);
+    }
+
+    .admin-request-actions {
+        width: 100%;
+    }
+
+    .admin-request-actions button {
+        flex: 1;
+    }
+
+}
+
+/* ==========================================
+   ADMIN PANEL
+========================================== */
+
+.admin-stats-grid {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 360px;
+}
+
+.admin-requests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-request-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: 0.2s ease;
+}
+
+.admin-request-card:hover {
+    border-color: #06b6d44d;
+}
+
+.admin-request-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 9px;
+    background: #06b6d41a;
+    color: var(--cyan);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+}
+
+.admin-request-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-request-details h3 {
+    font-size: 14px;
+    margin-bottom: 5px;
+    overflow-wrap: anywhere;
+}
+
+.admin-request-details p {
+    color: var(--muted);
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
+
+.admin-request-status {
+    display: inline-block;
+    margin-top: 9px;
+    padding: 5px 8px;
+    border-radius: 5px;
+    background: #f59e0b18;
+    color: #fbbf24;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+}
+
+.admin-request-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.admin-request-actions button {
+    white-space: nowrap;
+}
+
+.admin-request-actions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.admin-approve-button {
+    background: var(--cyan);
+}
+
+.admin-reject-button:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.admin-message {
+    padding: 13px 15px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.admin-message.success {
+    color: var(--green);
+    background: #42c98b12;
+    border-color: #42c98b40;
+}
+
+.admin-message.error {
+    color: var(--red);
+    background: #ff858512;
+    border-color: #ff858540;
+}
+
+@media (max-width: 700px) {
+    .admin-request-card {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .admin-request-details {
+        flex-basis: calc(100% - 65px);
+    }
+
+    .admin-request-actions {
+        width: 100%;
+    }
+
+    .admin-request-actions button {
+        flex: 1;
+    }
+}
+
+/* Hide elements even when other CSS sets display */
+[hidden] {
+    display: none !important;
+}

@@ -70,6 +70,14 @@
                     <span>Activity Builder</span>
                 </a>
 
+                <a href="#" class="nav-link" data-view="admin"
+                    id="adminNavLink"
+                    hidden
+                >
+                    <i data-lucide="shield-check"></i>
+                    <span>Admin Panel</span>
+                </a>
+
             </nav>
 
 
@@ -576,6 +584,113 @@
 
             </section>
 
+            <!-- ==================================
+     ADMIN PANEL VIEW
+=================================== -->
+
+<section class="view" id="adminView">
+
+    <section class="page-intro">
+
+        <div>
+
+            <div class="eyebrow">
+                ADMINISTRATION
+            </div>
+
+            <h2>
+                Account Requests
+            </h2>
+
+            <p>
+                Review and manage new user registration requests.
+            </p>
+
+        </div>
+
+        <button
+            type="button"
+            class="secondary-button"
+            id="refreshRequestsBtn"
+        >
+            <i data-lucide="refresh-cw"></i>
+            Refresh
+        </button>
+
+    </section>
+
+
+    <!-- PENDING REQUEST COUNT -->
+
+    <section class="stats-grid admin-stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+                <span>PENDING REQUESTS</span>
+                <i data-lucide="users"></i>
+            </div>
+
+            <div
+                class="stat-value"
+                id="pendingRequestCount"
+            >
+                00
+            </div>
+
+            <div class="stat-description">
+                Awaiting your approval
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- REQUEST LIST -->
+
+    <section class="activities-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <div class="eyebrow">
+                    USER MANAGEMENT
+                </div>
+
+                <h2>
+                    Registration Requests
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="adminMessage"
+            class="admin-message"
+            hidden
+        ></div>
+
+
+        <div
+            id="adminRequestsList"
+            class="admin-requests-list"
+        >
+
+            <div class="empty-panel">
+                <p>Loading registration requests...</p>
+            </div>
+
+        </div>
+
+    </section>
+
+</section>
+
+
 
             <!-- ==================================
                  FOOTER
@@ -952,6 +1067,7 @@
     =================================== -->
 
     <script src="./js/script.js"></script>
+    <script src="./js/admin.js"></script>
 
 </body>
 

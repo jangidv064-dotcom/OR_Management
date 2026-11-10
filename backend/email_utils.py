@@ -66,11 +66,15 @@ Administration Team
 
     try:
 
-        with smtplib.SMTP_SSL(
+        with smtplib.SMTP(
             server,
             port,
-            timeout=20
+            timeout=30
         ) as smtp:
+
+            smtp.ehlo()
+            smtp.starttls()
+            smtp.ehlo()
 
             smtp.login(username, password)
             smtp.send_message(message)

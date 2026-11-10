@@ -4,7 +4,8 @@ const API_URL = "/api/activities";
 const views = {
     dashboard: document.getElementById("dashboardView"),
     activities: document.getElementById("activitiesView"),
-    builder: document.getElementById("builderView")
+    builder: document.getElementById("builderView"),
+    admin: document.getElementById("adminView")
 };
 
 let activities = [];
@@ -78,7 +79,15 @@ async function initializeDashboard() {
 
         const data = await apiRequest("/api/auth/me");
 
+        window.currentUser = data.user;
         currentUser = data.user;
+
+        initializeAdminPanel(currentUser);
+
+        window.currentUser = data.user;
+        currentUser = data.user;
+
+        initializeAdminPanel(currentUser);
 
         document.getElementById("headerUserName").textContent =
             currentUser.name;
@@ -393,7 +402,8 @@ function showView(name) {
     const labels = {
         dashboard: "Dashboard",
         activities: "My Activities",
-        builder: editingId ? "Edit Activity" : "Activity Builder"
+        builder: editingId ? "Edit Activity" : "Activity Builder",
+        admin: "Admin Panel"
     };
 
     document.getElementById("pageTitle").textContent =
@@ -405,6 +415,13 @@ function showView(name) {
     if (name !== "builder") {
         renderLists();
     }
+
+    if (name === "admin") {
+    openAdminPanel();
+}
+if (name === "admin") {
+    openAdminPanel();
+}
 
     refreshIcons();
 }
@@ -1039,4 +1056,4 @@ showView("dashboard");
 
 initializeDashboard();
 
-let currentUser = null;
+window.currentUser = null;
