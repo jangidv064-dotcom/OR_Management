@@ -6,6 +6,8 @@ venv/
 
 # Environment variables
 .env
+.env.*
+!.env.example
 backend/.env
 
 # Uploaded path files

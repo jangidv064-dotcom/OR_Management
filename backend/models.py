@@ -28,6 +28,33 @@ class User(db.Model):
         index=True
     )
 
+    date_of_birth = db.Column(
+        db.Date,
+        nullable=True
+    )
+
+    terms_accepted = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=False
+    )
+
+    privacy_accepted = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=False
+    )
+
+    terms_accepted_at = db.Column(
+        db.DateTime,
+        nullable=True
+    )
+
+    privacy_accepted_at = db.Column(
+        db.DateTime,
+        nullable=True
+    )
+
     password_hash = db.Column(
         db.String(255),
         nullable=False

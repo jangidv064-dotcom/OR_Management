@@ -372,3 +372,60 @@ footer span {
         flex-wrap: wrap;
     }
 }
+
+.password-requirements {
+    margin-top: 10px;
+    padding: 12px;
+    background: #121214;
+    border-radius: 8px;
+}
+
+.password-requirements p {
+    font-size: 12px;
+    color: #94A3B8;
+    margin: 5px 0;
+    transition: color 0.2s ease;
+}
+
+.password-requirements p.valid {
+    color: #22C55E;
+}
+
+.password-requirements p.invalid {
+    color: #EF4444;
+}
+
+.dob-hint {
+    display: block;
+    margin-top: 7px;
+    color: #94A3B8;
+    font-size: 12px;
+}
+.terms-agreement {
+    margin-top: 15px;
+}
+
+.terms-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: #94A3B8;
+    line-height: 1.6;
+    cursor: pointer;
+}
+
+.terms-checkbox input {
+    margin-top: 4px;
+    accent-color: #06B6D4;
+    cursor: pointer;
+}
+
+.terms-checkbox a {
+    color: #06B6D4;
+    text-decoration: none;
+}
+
+.terms-checkbox a:hover {
+    text-decoration: underline;
+}

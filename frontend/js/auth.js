@@ -188,6 +188,34 @@ signupForm.addEventListener("submit", async event => {
 
     const password = document.getElementById("signupPassword").value;
 
+    const dob = document.getElementById("signupDob").value;
+
+    const acceptTerms = document.getElementById("acceptTerms").checked;
+
+    // Check Terms & Conditions and Privacy Policy
+
+    if (!acceptTerms) {
+
+        showMessage(
+            "You must accept the Terms & Conditions and Privacy Policy."
+        );
+
+        return;
+    }
+
+    // Check Date of Birth
+
+    if (!dob) {
+
+        showMessage(
+            "Date of birth is required."
+        );
+
+        return;
+    }
+
+    // Check minimum password length
+
     if (password.length < 8) {
 
         showMessage(
@@ -209,14 +237,24 @@ signupForm.addEventListener("submit", async event => {
             method: "POST",
 
             body: JSON.stringify({
+
                 name: name,
                 email: email,
-                password: password
+                password: password,
+                date_of_birth: dob,
+
+                accept_terms: acceptTerms,
+                accept_privacy: acceptTerms
+
             })
 
         });
 
         signupForm.reset();
+
+        // Reset password requirement indicators
+
+        updatePasswordRequirements("");
 
         showMessage(
             "Registration request submitted successfully! Your account is pending admin approval. You can log in after approval.",
@@ -239,15 +277,87 @@ signupForm.addEventListener("submit", async event => {
 
 
 // ==========================================
+// PASSWORD REQUIREMENTS VALIDATION
+// ==========================================
+
+function initializePasswordValidation() {
+
+    const passwordInput = document.getElementById("signupPassword");
+
+    if (!passwordInput) return;
+
+    passwordInput.addEventListener("input", function () {
+
+        updatePasswordRequirements(this.value);
+
+    });
+
+}
+
+
+function updatePasswordRequirements(password) {
+
+    const requirements = {
+
+        reqLength: password => password.length >= 8,
+
+        reqUpper: password => /[A-Z]/.test(password),
+
+        reqLower: password => /[a-z]/.test(password),
+
+        reqNumber: password => /[0-9]/.test(password),
+
+        reqSpecial: password => /[^A-Za-z0-9]/.test(password)
+
+    };
+
+    Object.entries(requirements).forEach(([id, check]) => {
+
+        const element = document.getElementById(id);
+
+        if (!element) return;
+
+        const valid = check(password);
+
+        element.classList.toggle("valid", valid);
+
+        element.classList.toggle("invalid", !valid);
+
+        const originalText = element.textContent.replace(
+            /^[✓✗]\s*/,
+            ""
+        );
+
+        element.textContent =
+            (valid ? "✓ " : "✗ ") + originalText;
+
+    });
+
+}
+
+
+// ==========================================
 // ICON INITIALIZATION
 // ==========================================
 
 function refreshIcons() {
 
     if (window.lucide) {
+
         window.lucide.createIcons();
+
     }
 
 }
+
+
+// ==========================================
+// INITIALIZATION
+// ==========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initializePasswordValidation
+);
 
 refreshIcons();

@@ -1,3 +1,4 @@
+from datetime import date, datetime
 
 from flask import (
     Blueprint,
@@ -5,6 +6,27 @@ from flask import (
     jsonify,
     session
 )
+
+import re
+
+
+def validate_password(password):
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters long."
+
+    if not re.search(r"[A-Z]", password):
+        return False, "Password must contain at least one uppercase letter."
+
+    if not re.search(r"[a-z]", password):
+        return False, "Password must contain at least one lowercase letter."
+
+    if not re.search(r"[0-9]", password):
+        return False, "Password must contain at least one number."
+
+    if not re.search(r"[^A-Za-z0-9]", password):
+        return False, "Password must contain at least one special character."
+
+    return True, None
 
 from werkzeug.security import (
     generate_password_hash,
@@ -28,8 +50,14 @@ def user_to_dict(user):
         "name": user.name,
         "email": user.email,
         "is_admin": bool(user.is_admin),
-        "approval_status": user.approval_status
+        "approval_status": user.approval_status,
+        "date_of_birth": (
+            user.date_of_birth.isoformat()
+            if user.date_of_birth else None
+        )
     }
+
+    
 
 
 # ==========================================
@@ -43,7 +71,10 @@ def register():
 
     name = str(data.get("name", "")).strip()
     email = str(data.get("email", "")).strip().lower()
+    dob_value = data.get("date_of_birth", "")
     password = data.get("password", "")
+    accept_terms = data.get("accept_terms")
+    accept_privacy = data.get("accept_privacy")
 
     if not name:
         return jsonify({
@@ -60,9 +91,54 @@ def register():
             "error": "Enter a valid email address."
         }), 400
 
-    if not isinstance(password, str) or len(password) < 8:
+    if not isinstance(password, str):
         return jsonify({
-            "error": "Password must contain at least 8 characters."
+        "error": "Invalid password."
+    }), 400
+
+    is_valid, password_error = validate_password(password)
+
+    if not is_valid:
+        return jsonify({
+        "error": password_error
+    }), 400
+
+    if not isinstance(dob_value, str) or not dob_value:
+        return jsonify({
+        "error": "Date of birth is required."
+    }), 400
+
+    try:
+        dob = date.fromisoformat(dob_value)
+    except ValueError:
+        return jsonify({
+            "error": "Enter a valid date of birth."
+        }), 400
+
+    today = date.today()
+
+    if dob > today:
+        return jsonify({
+            "error": "Date of birth cannot be in the future."
+        }), 400
+
+    age = today.year - dob.year - (
+        (today.month, today.day) < (dob.month, dob.day)
+    )
+
+    if age < 18:
+        return jsonify({
+            "error": "You must be at least 18 years old to register."
+        }), 400
+
+        if accept_terms is not True:
+            return jsonify({
+            "error": "You must accept the Terms & Conditions."
+        }), 400
+
+    if accept_privacy is not True:
+        return jsonify({
+            "error": "You must acknowledge the Privacy Policy."
         }), 400
 
     existing_user = User.query.filter_by(
@@ -79,10 +155,16 @@ def register():
         user = User(
             name=name,
             email=email,
+            date_of_birth=dob,
             password_hash=generate_password_hash(password),
             is_admin=False,
-            approval_status="pending"
+            approval_status="pending",
+            terms_accepted=True,
+            privacy_accepted=True,
+            terms_accepted_at=datetime.utcnow(),
+            privacy_accepted_at=datetime.utcnow()
         )
+    
 
         db.session.add(user)
         db.session.commit()

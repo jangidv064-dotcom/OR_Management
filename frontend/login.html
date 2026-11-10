@@ -171,6 +171,60 @@
 
                 </div>
 
+                <div class="password-requirements" id="passwordRequirements">
+                    <p id="reqLength">✗ At least 8 characters</p>
+                    <p id="reqUpper">✗ One uppercase letter (A-Z)</p>
+                    <p id="reqLower">✗ One lowercase letter (a-z)</p>
+                    <p id="reqNumber">✗ One number (0-9)</p>
+                    <p id="reqSpecial">✗ One special character (@#$! etc.)</p>
+                </div>
+
+                <div class="form-field">
+
+                    <label for="signupDob">Date of Birth</label>
+
+                    <div class="input-wrapper">
+                        <i data-lucide="calendar"></i>
+
+                        <input
+                            type="date"
+                            id="signupDob"
+                            autocomplete="bday"
+                            required
+                        >
+                    </div>
+
+                    <small class="dob-hint">
+                        You must be at least 18 years old to register.
+                    </small>
+
+                </div>
+
+                    <div class="form-field terms-agreement">
+
+                        <label class="terms-checkbox">
+
+                            <input
+                                type="checkbox"
+                                id="acceptTerms"
+                                required
+                            >
+
+                            <span>
+                                I agree to the
+                                <a href="./terms.html" target="_blank">
+                                    Terms & Conditions
+                                </a>
+                                and
+                                <a href="./privacy.html" target="_blank">
+                                    Privacy Policy
+                                </a>.
+                            </span>
+
+                        </label>
+
+                    </div>
+
 
                 <button type="submit" class="auth-button" id="signupButton">
 
