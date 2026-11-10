@@ -131,8 +131,8 @@ def register():
             "error": "You must be at least 18 years old to register."
         }), 400
 
-        if accept_terms is not True:
-            return jsonify({
+    if accept_terms is not True:
+        return jsonify({
             "error": "You must accept the Terms & Conditions."
         }), 400
 
@@ -140,16 +140,7 @@ def register():
         return jsonify({
             "error": "You must acknowledge the Privacy Policy."
         }), 400
-
-    existing_user = User.query.filter_by(
-        email=email
-    ).first()
-
-    if existing_user:
-        return jsonify({
-            "error": "An account with this email already exists."
-        }), 409
-
+    
     try:
 
         user = User(
